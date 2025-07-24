@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Sweet Shop</title>
+    <link rel="stylesheet" href="style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Droid+Sans&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="navbar">
+        <div class="nav-left">
+            <i data-lucide="user-circle"></i>
+            <a href="#">Categories</a>
+            <a href="#">Best Sellers</>
+            <a href="#">New</a>
+        </div>
+        <div class="nav-right">
+            <div class="search-bar">
+                    <i data-lucide="search" style="color: white; margin-left: 1px;"></i>
+                <input type="text" placeholder="Search..." />
+            </div>
+            <div class="cart-wrap">
+            <i data-lucide="shopping-cart" class="icon-cart"></i>
+            </div>
+        </div>
+    </header>
+
+    <main class="hero"></main>
+        <script type="module">
+            import { createIcons, icons } from 'https://unpkg.com/lucide@latest/dist/esm/lucide.js';
+            createIcons({ icons });
+        </script>
+    </body>
+</html>
