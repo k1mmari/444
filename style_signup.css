@@ -1,0 +1,162 @@
+/* Reset & Base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Droid Sans', sans-serif;
+    background-image: url('./assets/bg2.png');
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Navbar */
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 10;
+    background-color: #f0f0f0;
+    padding: 1rem 4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+}
+
+.nav-left a,
+.nav-right i {
+    margin: 0 3rem;
+    display: flex;
+    text-decoration: none;
+    color: #000;
+}
+
+.nav-left {
+    display: flex;
+    align-items: center;
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    background-color: #444;
+    border-radius: 20px;
+    padding: 0.3rem 1rem 0.3rem 0.5rem;
+}
+
+.search-bar input {
+    border: none;
+    outline: none;
+    background: transparent;
+    color: white;
+    margin-left: 0.5rem;
+}
+
+[data-lucide] {
+  width: 25px;
+  height: 25px;
+  color: #333; /* or any accent color */
+  cursor: pointer;
+}
+.cart-wrap {
+    margin-left: 3rem;
+}
+.icon-cart {
+    width: 25px;
+    height: 25px;
+    color: #333; /* or any accent color */
+    cursor: pointer;
+    margin-left: auto;
+}
+.signup-container {
+    width: 90%;
+    background-color: rgba(0, 0, 0, 0.6); /* translucent black */
+    padding: 0.5rem 3rem;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+
+}
+
+/* Title */
+
+.form-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 480px; /* Adjust as needed */
+    margin: 0 auto;
+}
+
+.form-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    color: white;
+    margin-bottom: 1.5rem;
+    letter-spacing: 2px;
+}
+.signup-container h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    color: white;
+    letter-spacing: 2px;
+}
+
+/* Input fields */
+.signup-container input {
+    width: 100%;
+    padding: 1rem;
+    margin: 0.5rem 0;
+    border-radius: 2rem;
+    border: none;
+    font-family: 'Droid Sans', sans-serif;
+    font-size: 1rem;
+}
+
+/* Button */
+.signup-container button {
+    background-color: white;
+    color: black;
+    font-weight: bold;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 2rem;
+    margin-top: 1rem;
+    cursor: pointer;
+    font-family: 'Droid Sans', sans-serif;
+}
+
+/* Optional: add hover effect */
+.signup-container button:hover {
+    background-color: #ddd;
+}
+/* Hero background */
+.hero {
+    width: 100%;
+    height: 100vh;
+    padding-top: 100px; /* match navbar height or more */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
