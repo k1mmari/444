@@ -16,6 +16,6 @@ public class sweetShopApp
 {
     public static void main(String[] args)
     {
-        SpringApplication.run(sweetShopApp.class);
+        SpringApplication.run(sweetShopApp.class, args);
     }
 }
