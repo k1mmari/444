@@ -1,11 +1,10 @@
 {
     "cSpell.words": [
         "jdbc",
+        "sweetshopdb",
         "thesweetshopdb"
     ],
-    "java.project.sourcePaths": [
-        "backend\\sweetShopDB\\src"
-    ],
+    "java.project.sourcePaths": [],
     "java.project.referencedLibraries": [
         "c:\\Users\\alfre\\Downloads\\mysql-connector-j-9.4.0\\mysql-connector-j-9.4.0\\mysql-connector-j-9.4.0.jar"
     ]
