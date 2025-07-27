@@ -29,10 +29,44 @@ public class signupController
     @PostMapping("/signup")
     public String signUp(@RequestBody user user) throws DataAccessException
     {
+        if(!matchingPasswords(user))
+        {
+            return "Error! The passwords do not match.";
+        }
+
+        if(usernameExists(user.getUsername()))
+        {
+            return "Error! This username has already been taken.";
+        }
+
+        if(emailExists(user.getEmail()))
+        {
+            return "Error! This email address has already been used.";
+        }
+
         String sql = "INSERT INTO user (username, password, first_name, last_name, email) VALUES (?, ?, ?, ?, ?)";
 
             jdbcTemplate.update(sql, user.getUsername(), user.getPassword(), user.getFirstName(), user.getLastName(), 
             user.getEmail());
             return "Signup successful! " + user.getFirstName() + " " + user.getLastName() + " has been added.";
+    }
+
+    private boolean matchingPasswords(user user)
+    {
+        return user.getPassword().equals(user.getConfirmPassword());
+    }
+
+    private boolean usernameExists(String username)
+    {
+        Integer count = jdbcTemplate.queryForObject(
+            "SELECT COUNT(*) FROM user WHERE username = ?", Integer.class, username);
+            return count != null && count > 0;
+    }
+
+    private boolean emailExists(String email)
+    {
+        Integer count = jdbcTemplate.queryForObject(
+            "SELECT COUNT(*) FROM user WHERE email = ?", Integer.class, email);
+            return count != null && count > 0;
     }
 }

@@ -17,6 +17,7 @@ public class user
     private String username;
 
     private String password;
+    private String confirmPassword;
     private String firstName;
     private String lastName;
     private String email;
@@ -44,6 +45,11 @@ public class user
         this.password = password;
     }
 
+    public void setConfirmPassword(String confirmPassword)
+    {
+        this.confirmPassword = confirmPassword;
+    }
+
     public void setFirstName(String firstName)
     {
         this.firstName = firstName;
@@ -68,6 +74,11 @@ public class user
     public String getPassword()
     {
         return password;
+    }
+
+    public String getConfirmPassword()
+    {
+        return confirmPassword;
     }
 
     public String getFirstName()
