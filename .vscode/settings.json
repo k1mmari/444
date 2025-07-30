@@ -1,11 +1,30 @@
 {
     "cSpell.words": [
         "jdbc",
+        "springframework",
         "sweetshopdb",
         "thesweetshopdb"
     ],
     "java.project.sourcePaths": [],
     "java.project.referencedLibraries": [
         "c:\\Users\\alfre\\Downloads\\mysql-connector-j-9.4.0\\mysql-connector-j-9.4.0\\mysql-connector-j-9.4.0.jar"
-    ]
+    ],
+    "sqltools.connections": [
+        {
+            "mysqlOptions": {
+                "authProtocol": "default",
+                "enableSsl": "Disabled"
+            },
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 3306,
+            "driver": "MySQL",
+            "name": "444Connection",
+            "database": "thesweetshopdb",
+            "username": "sweetShopDev",
+            "askForPassword": true
+        }
+    ],
+    "java.compile.nullAnalysis.mode": "automatic",
+    "java.debug.settings.onBuildFailureProceed": true
 }

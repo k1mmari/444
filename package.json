@@ -1,5 +1,13 @@
 {
   "dependencies": {
     "lucide": "^0.525.0"
+  },
+  "devDependencies": {
+    "live-server": "^1.2.2"
+  },
+  "scripts": {
+    "start": "start \"Backend\" cmd /c \"cd backend && mvnw spring-boot:run\" && start \"Frontend\" cmd /c \"npx live-server --port=5500 --host=127.0.0.1\"",
+    "backend": "cd backend && mvnw spring-boot:run",
+    "frontend": "npx live-server --port=5500 --host=127.0.0.1"
   }
 }

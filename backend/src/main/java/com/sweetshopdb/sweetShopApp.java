@@ -17,5 +17,6 @@ public class sweetShopApp
     public static void main(String[] args)
     {
         SpringApplication.run(sweetShopApp.class, args);
+        System.out.println("Sweet Shop Application is running!");
     }
 }

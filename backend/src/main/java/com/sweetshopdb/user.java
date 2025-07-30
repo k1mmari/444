@@ -9,8 +9,10 @@ package com.sweetshopdb;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "`user`")
 public class user 
 {
     @Id
@@ -94,5 +96,10 @@ public class user
     public String getEmail()
     {
         return email;
+    }
+
+    public boolean matchPasswords(String password, String confirmPassword)
+    {
+        return password.equals(confirmPassword);
     }
 }
