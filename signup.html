@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width-device-width, initial-scale="1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>The Sweet SHop</title>
     <link rel="stylesheet" href="style_signup.css" />
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display&display=swap" rel="stylesheet">
@@ -11,10 +11,24 @@
 <body>
      <header class="navbar">
         <div class="nav-left">
-            <i data-lucide="user-circle"></i>
-            <a href="#">Categories</a>
-            <a href="#">Best Sellers</a>
-            <a href="#">New</a>
+            <div class="profile-icon">
+                <a href="signup.html">
+                    <i data-lucide="user-circle"></i>
+                </a>
+            </div>
+            <div class="nav-links">
+                <div class="categories-wrap">
+                    <a href="#" class="categories-tab" id="toggle-panel">Categories</a>
+                    <div class="side-panel" id="side-panel">
+                        <a href="#" style="color: white;">Candies</a>
+                        <a href="#" style="color: white;">Cookies</a>
+                        <a href="#" style="color: white;">New</a>
+                        <a href="#" style="color: white;">Bundles</a>
+                    </div>
+                </div>
+                <a href="#">Best Sellers</a>
+                <a href="#">New</a>
+            </div>
         </div>
         <div class="nav-right">
             <div class="search-bar">
@@ -69,6 +83,14 @@
                     alert(result);
             });
         </script>
+         <script>
+            const toggleBtn = document.getElementById("toggle-panel");
+            const sidePanel = document.getElementById("side-panel");
 
+            toggleBtn.addEventListener("click", (e) => {
+            e.preventDefault(); // stop page jump
+            sidePanel.classList.toggle("open");
+            });
+        </script>
     </body>
 </html>
