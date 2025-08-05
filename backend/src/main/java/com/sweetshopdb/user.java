@@ -15,7 +15,7 @@ import jakarta.persistence.Table;
 @Table(name = "`user`")
 public class user 
 {
-    @Id
+    @Id //primary key
     private String username;
 
     private String password;
