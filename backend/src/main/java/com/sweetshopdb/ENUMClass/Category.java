@@ -4,14 +4,13 @@
  * @author 444 Team Alfredo Catzin
  * @version 1.0
  */
-package com.sweetshopdb;
+package com.sweetshopdb.ENUMClass;
+
 
 public enum Category {
     
-    CANDY("Candy"),
-    SNACKS("Snacks"),
+    GUMMIES("Gummies"),
     CHOCOLATE("Chocolate"),
-    DRINKS("Drinks"),
     OTHER("Other");
 
     private final String categoryName;

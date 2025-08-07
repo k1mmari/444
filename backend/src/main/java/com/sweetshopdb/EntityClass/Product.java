@@ -7,9 +7,10 @@
  * @version 1.0
  */
 
-package com.sweetshopdb;
+package com.sweetshopdb.EntityClass;
 
 import jakarta.persistence.*;
+import com.sweetshopdb.ENUMClass.Category;
 
 @Entity
 @Table(name = "product")

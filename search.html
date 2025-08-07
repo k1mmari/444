@@ -106,9 +106,9 @@
         <div class="categories-wrap">
           <a href="#" class="categories-tab" id="toggle-panel">Categories</a>
           <div class="side-panel" id="side-panel">
-            <a href="#" style="color: white;">Candies</a>
+            <a href="#" style="color: white;">Gummies</a>
             <a href="#" style="color: white;">Cookies</a>
-            <a href="#" style="color: white;">Bundles</a>
+            <a href="#" style="color: white;">Other</a>
             <a href="#" style="color: white;">All</a>
           </div>
         </div>
@@ -202,8 +202,8 @@
         const card = document.createElement("div");
         card.className = "product-card";
         card.innerHTML = `
-          <div class="product-image" style="background-image: url('${product.imageURL || "/assets/placeholder.png"}')"></div>
-          <h3 class="product-name">${product.productName}</h3>
+          <div class="product-image" style="background-image: url('${product.img_url || "/assets/placeholder.png"}')"></div>
+          <h3 class="product-name">${product.prod_name}</h3>
           <p class="product-price">$${product.price.toFixed(2)}</p>
           <button class="add-to-cart">🛒</button>
         `;

@@ -5,7 +5,7 @@
  * @version 1.0
  */
 
-package com.sweetshopdb;
+package com.sweetshopdb.EntityClass;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -13,7 +13,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "`user`")
-public class user 
+public class User 
 {
     @Id //primary key
     private String username;
@@ -25,9 +25,9 @@ public class user
     private String email;
 
     //no arg constructor
-    public user() {}
+    public User() {}
     //constructor
-    public user(String username, String password, String firstName, String lastName, String email)
+    public User(String username, String password, String firstName, String lastName, String email)
     {
         this.username = username;
         this.password = password;
