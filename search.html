@@ -106,10 +106,10 @@
         <div class="categories-wrap">
           <a href="#" class="categories-tab" id="toggle-panel">Categories</a>
           <div class="side-panel" id="side-panel">
-            <a href="#" style="color: white;">Gummies</a>
-            <a href="#" style="color: white;">Cookies</a>
-            <a href="#" style="color: white;">Other</a>
-            <a href="#" style="color: white;">All</a>
+            <a href="#" onclick="searchByCategory('GUMMIES')" style="color: white;">Gummies</a>
+            <a href="#" onclick="searchByCategory('CHOCOLATE')" style="color: white;">Chocolate</a>
+            <a href="#" onclick="searchByCategory('OTHER')" style="color: white;">Other</a>
+            <a href="#" onclick="searchByCategory('')" style="color: white;">All</a>
           </div>
         </div>
         <a href="#">Best Sellers</a>
@@ -201,9 +201,17 @@
       products.forEach((product) => {
         const card = document.createElement("div");
         card.className = "product-card";
+
+      let imagePath;
+      if (product.imageURL) {
+        imagePath = `http://localhost:8080${product.imageURL}`;
+    } else {
+      imagePath = "/assets/placeholder.png"; // Local fallback
+    }
+
         card.innerHTML = `
-          <div class="product-image" style="background-image: url('${product.img_url || "/assets/placeholder.png"}')"></div>
-          <h3 class="product-name">${product.prod_name}</h3>
+          <div class="product-image" style="background-image: url('${product.imageURL || "/assets/placeholder.png"}')"></div>
+          <h3 class="product-name">${product.productName}</h3>
           <p class="product-price">$${product.price.toFixed(2)}</p>
           <button class="add-to-cart">🛒</button>
         `;
@@ -211,5 +219,15 @@
       });
     }
   </script>
+
+  <script>
+function searchByCategory(category) {
+  if (category) {
+    window.location.href = `search.html?category=${encodeURIComponent(category)}`;
+  } else {
+    window.location.href = `search.html?q=`; // Show all products
+  }
+}
+</script>
 </body>
 </html>

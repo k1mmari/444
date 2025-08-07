@@ -17,14 +17,22 @@ import com.sweetshopdb.ENUMClass.Category;
 public class Product {
     
     @Id // primary key
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "prod_id")
     private int productID;
+
+    @Column(name = "prod_name")
     private String productName;
     private double price;
 
     @Enumerated(EnumType.STRING)
     private Category category;
     private String description;
+
+    @Column(name = "img_url")
     private String imageURL;
+
+    @Column(name = "stock_qty")
     private int stockQuantity;
 
     //no arg constructor

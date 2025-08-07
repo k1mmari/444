@@ -23,12 +23,17 @@ public class ProductService
     //method to return a search result for products via user queries
     public List<Product> searchProducts(String query)
     {
+        System.out.println("ProductService: Searching for: " + query); //test output
         if(query == null || query.trim().isEmpty())
         {
-            return productRepository.findAll(); // Return all products if query is empty
+            List<Product> allProducts = productRepository.findAll();
+            System.out.println("ProductService: Found " + allProducts.size() + " products (all)");
+            return allProducts;
         }
 
-        return productRepository.findByProductNameContainingIgnoreCase(query.trim()); // Return products matching the query
+        List<Product> findProducts = productRepository.searchProductsCaseInsensitive(query.trim());
+        System.out.println("ProductService: Found " + findProducts.size() + " products for query: " + query);
+        return findProducts;
     }
 
     //method for a user to add a product to the DB
@@ -45,4 +50,5 @@ public class ProductService
         }
         return productRepository.save(product);
     }
+    
 }

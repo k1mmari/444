@@ -19,7 +19,7 @@ import com.sweetshopdb.ServiceClass.*;
 
 
 @RestController
-@CrossOrigin(origins = {"http://127.0.0.1:5500", "http://localhost:550"})
+@CrossOrigin(origins = {"http://127.0.0.1:5500", "http://localhost:5500"})
 @RequestMapping("/api") 
 public class SweetShopController 
 {
@@ -40,6 +40,7 @@ public class SweetShopController
     @GetMapping("/search")
     public List<Product> searchProducts(@RequestParam String q)
     {
+        System.out.println("Search request received for: " + q); //test output
         return productService.searchProducts(q);
     }
 
