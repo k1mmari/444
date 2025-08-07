@@ -1,63 +1,95 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>The Sweet Shop</title>
-    <link rel="stylesheet" href="style.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Droid+Sans&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Sweet Shop</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Droid+Sans&display=swap" rel="stylesheet">
 </head>
 <body>
-    <header class="navbar">
-        <div class="nav-left">
-            <div class="logo">
-                <a href="./">
-                <img src="/assets/logo.png" alt="The Sweet Shop Logo" class="logo-img" />
-                </a>
-            </div>
-            <div class="profile-icon">
-                <a href="signup.html">
-                    <i data-lucide="user-circle"></i>
-                </a>
-            </div>
-            <div class="nav-links">
-                <div class="categories-wrap">
-                    <a href="#" class="categories-tab" id="toggle-panel">Categories</a>
-                    <div class="side-panel" id="side-panel">
-                        <a href="#" style="color: white;">Candies</a>
-                        <a href="#" style="color: white;">Cookies</a>
-                        <a href="#" style="color: white;">Bundles</a>
-                        <a href="#" style="color: white;">All</a>
-                    </div>
-                </div>
-                <a href="#">Best Sellers</a>
-                <a href="#">New</a>
-            </div>
+  <header class="navbar">
+    <div class="nav-left">
+      <div class="logo">
+        <a href="./">
+          <img src="/assets/logo.png" alt="The Sweet Shop Logo" class="logo-img" />
+        </a>
+      </div>
+      <div class="profile-icon">
+        <a href="signup.html">
+          <i data-lucide="user-circle"></i>
+        </a>
+      </div>
+      <div class="nav-links">
+        <div class="categories-wrap">
+          <a href="#" class="categories-tab" id="toggle-panel">Categories</a>
+          <div class="side-panel" id="side-panel">
+            <a href="#" style="color: white;">Candies</a>
+            <a href="#" style="color: white;">Cookies</a>
+            <a href="#" style="color: white;">Bundles</a>
+            <a href="#" style="color: white;">All</a>
+          </div>
         </div>
-        <div class="nav-right">
-            <div class="search-bar">
-                    <i data-lucide="search" style="color: white; margin-left: 1px;"></i>
-                <input type="text" placeholder="Search..." />
-            </div>
-            <div class="cart-wrap">
-            <i data-lucide="shopping-cart" class="icon-cart"></i>
-            </div>
-        </div>
-    </header>
+        <a href="#">Best Sellers</a>
+        <a href="#">New</a>
+      </div>
+    </div>
+    <div class="nav-right">
+      <div class="search-bar">
+        <input id="searchInput" type="text" placeholder="Search..." />
+        <i data-lucide="search" id="searchIcon" style="color: white; margin-left: 1px;"></i>
+      </div>
+      <div class="cart-wrap">
+        <i data-lucide="shopping-cart" class="icon-cart"></i>
+      </div>
+    </div>
+  </header>
 
-    <main class="hero"></main>
-        <script type="module">
-            import { createIcons, icons } from 'https://unpkg.com/lucide@latest/dist/esm/lucide.js';
-            createIcons({ icons });
-        </script>
-        <script>
-            const toggleBtn = document.getElementById("toggle-panel");
-            const sidePanel = document.getElementById("side-panel");
+  <main class="hero">
+  </main>
 
-            toggleBtn.addEventListener("click", (e) => {
-            e.preventDefault(); // stop page jump
-            sidePanel.classList.toggle("open");
-            });
-        </script>
-    </body>
+  <!-- Lucide Icons -->
+  <script type="module">
+    import { createIcons, icons } from 'https://unpkg.com/lucide@latest/dist/esm/lucide.js';
+    createIcons({ icons });
+  </script>
+
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const toggleBtn = document.getElementById("toggle-panel");
+      const sidePanel = document.getElementById("side-panel");
+
+      if (toggleBtn && sidePanel) {
+        toggleBtn.addEventListener("click", (e) => {
+          e.preventDefault();
+          sidePanel.classList.toggle("open");
+        });
+      }
+
+      const searchInput = document.getElementById("searchInput");
+      const searchIcon = document.getElementById("searchIcon");
+
+      if (searchInput) {
+        searchInput.addEventListener("keydown", function (e) {
+          if (e.key === "Enter") {
+            const query = searchInput.value.trim();
+            if (query) {
+              window.location.href = `/search.html?q=${encodeURIComponent(query)}`;
+            }
+          }
+        });
+      }
+
+      if (searchIcon) {
+        searchIcon.addEventListener("click", function () {
+          const query = searchInput.value.trim();
+          if (query) {
+            window.location.href = `/search.html?q=${encodeURIComponent(query)}`;
+          }
+        });
+      }
+    });
+  </script>
+</body>
 </html>

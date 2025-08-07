@@ -162,7 +162,7 @@ body {
 [data-lucide] {
   width: 25px;
   height: 25px;
-  color: #333; /* or any accent color */
+  color: #333;
   cursor: pointer;
 }
 .cart-wrap {
@@ -171,7 +171,7 @@ body {
 .icon-cart {
     width: 25px;
     height: 25px;
-    color: #333; /* or any accent color */
+    color: #333;
     cursor: pointer;
     margin-left: auto;
 }

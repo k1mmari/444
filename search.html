@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Search Results - The Sweet Shop</title>
+  <link rel="stylesheet" href="style_signup.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Droid+Sans&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background-color: #1a1a1a;
+      font-family: 'Droid Sans', sans-serif;
+    }
+
+    .container {
+      padding: 2rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      color: white;
+      font-family: 'Playfair Display', serif;
+      margin-bottom: 2rem;
+    }
+
+    .grid {
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .product-card {
+      position: relative;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 18px;
+      overflow: hidden;
+      width: 180px;
+      height: 220px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      padding-bottom: 1rem;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(4px);
+    }
+
+    .product-image {
+      position: absolute;
+      top: 15px;
+      width: 150px;
+      height: 140px;
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    .product-name {
+      font-family: 'Droid Sans ', serif;
+      font-size: 1.3rem;
+      color: white;
+      margin-top: 100px;
+      margin-bottom: 0.2rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 140px;
+    }
+
+    .product-price {
+      font-size: 1.5rem;
+      color: white;
+      margin-bottom: 0.1rem;
+    }
+
+    .add-to-cart {
+      position: absolute;
+      top: 12px;
+      left: 130px;
+      background-color: #B8EEB2;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 40%;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <header class="navbar">
+    <div class="nav-left">
+      <div class="logo">
+        <a href="index.html">
+          <img src="/assets/logo.png" alt="The Sweet Shop Logo" class="logo-img" />
+        </a>
+      </div>
+      <div class="profile-icon">
+        <a href="signup.html">
+          <i data-lucide="user-circle"></i>
+        </a>
+      </div>
+      <div class="nav-links">
+        <div class="categories-wrap">
+          <a href="#" class="categories-tab" id="toggle-panel">Categories</a>
+          <div class="side-panel" id="side-panel">
+            <a href="#" style="color: white;">Candies</a>
+            <a href="#" style="color: white;">Cookies</a>
+            <a href="#" style="color: white;">Bundles</a>
+            <a href="#" style="color: white;">All</a>
+          </div>
+        </div>
+        <a href="#">Best Sellers</a>
+        <a href="#">New</a>
+      </div>
+    </div>
+    <div class="nav-right">
+      <div class="search-bar">
+        <input id="searchInput" type="text" placeholder="Search..." />
+        <i data-lucide="search" id="searchIcon" style="color: white; margin-left: 1px;"></i>
+      </div>
+      <div class="cart-wrap">
+        <i data-lucide="shopping-cart" class="icon-cart"></i>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <h1 id="search-title">Results for ""</h1>
+    <div id="results-container" class="grid">
+
+    </div>
+  </main>
+
+  <!-- Lucide Icons -->
+  <script type="module">
+    import { createIcons, icons } from 'https://unpkg.com/lucide@latest/dist/esm/lucide.js';
+    createIcons({ icons });
+  </script>
+
+  <!-- Category toggle -->
+  <script>
+    const toggleBtn = document.getElementById("toggle-panel");
+    const sidePanel = document.getElementById("side-panel");
+
+    toggleBtn.addEventListener("click", (e) => {
+      e.preventDefault(); // stop page jump
+      sidePanel.classList.toggle("open");
+    });
+  </script>
+
+  <!-- Search bar redirect -->
+  <script>
+    const searchInput = document.getElementById("searchInput");
+    const searchIcon = document.getElementById("searchIcon");
+
+    searchInput.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        const query = searchInput.value.trim();
+        if (query) {
+          window.location.href = `/search.html?q=${encodeURIComponent(query)}`;
+        }
+      }
+    });
+
+    searchIcon.addEventListener("click", function () {
+      const query = searchInput.value.trim();
+      if (query) {
+        window.location.href = `/search.html?q=${encodeURIComponent(query)}`;
+      }
+    });
+  </script>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const query = params.get("q") || "";
+    document.getElementById("search-title").textContent = `Results for "${query}"`;
+
+    fetch(`http://localhost:8080/api/search?q=${encodeURIComponent(query)}`)
+      .then((res) => res.json())
+      .then((products) => {
+        console.log("Results from backend:", products);
+        renderProducts(products);
+      })
+      .catch((err) => {
+        console.error("Error fetching products:", err);
+        document.getElementById("results-container").innerHTML = "<p style='color: white;'>Something went wrong.</p>";
+      });
+
+    function renderProducts(products) {
+      const container = document.getElementById("results-container");
+      container.innerHTML = "";
+
+      if (!products.length) {
+        container.innerHTML = "<p style='color: white;'>No results found.</p>";
+        return;
+      }
+
+      products.forEach((product) => {
+        const card = document.createElement("div");
+        card.className = "product-card";
+        card.innerHTML = `
+          <div class="product-image" style="background-image: url('${product.imageURL || "/assets/placeholder.png"}')"></div>
+          <h3 class="product-name">${product.productName}</h3>
+          <p class="product-price">$${product.price.toFixed(2)}</p>
+          <button class="add-to-cart">🛒</button>
+        `;
+        container.appendChild(card);
+      });
+    }
+  </script>
+</body>
+</html>

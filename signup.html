@@ -37,8 +37,8 @@
         </div>
         <div class="nav-right">
             <div class="search-bar">
-                    <i data-lucide="search" style="color: white; margin-left: 1px;"></i>
-                <input type="text" placeholder="Search..." />
+                <input id="searchInput" type="text" placeholder="Search..." />
+                <i data-lucide="search" id="searchIcon" style="color: white; margin-left: 1px;"></i>
             </div>
             <div class="cart-wrap">
             <i data-lucide="shopping-cart" class="icon-cart"></i>
@@ -122,6 +122,28 @@
             e.preventDefault(); // stop page jump
             sidePanel.classList.toggle("open");
             });
+            const searchInput = document.getElementById("searchInput");
+      const searchIcon = document.getElementById("searchIcon");
+
+      if (searchInput) {
+        searchInput.addEventListener("keydown", function (e) {
+          if (e.key === "Enter") {
+            const query = searchInput.value.trim();
+            if (query) {
+              window.location.href = `/search.html?q=${encodeURIComponent(query)}`;
+            }
+          }
+        });
+      }
+
+      if (searchIcon) {
+        searchIcon.addEventListener("click", function () {
+          const query = searchInput.value.trim();
+          if (query) {
+            window.location.href = `/search.html?q=${encodeURIComponent(query)}`;
+          }
+        });
+      }
         </script>
     </body>
 </html>
