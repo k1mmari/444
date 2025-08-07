@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.sweetshopdb.EntityClass.Product;
 import com.sweetshopdb.RepositoryClass.ProductRepository;
 import java.util.List;
+import com.sweetshopdb.ENUMClass.Category;
 
 @Service
 public class ProductService 
@@ -20,7 +21,7 @@ public class ProductService
     @Autowired //injects and initializes the ProductRepository bean
     private ProductRepository productRepository;
 
-    //method to return a search result for products via user queries
+    //method to return a search result for product name's (kit-kat)
     public List<Product> searchProducts(String query)
     {
         System.out.println("ProductService: Searching for: " + query); //test output
@@ -34,6 +35,24 @@ public class ProductService
         List<Product> findProducts = productRepository.searchProductsCaseInsensitive(query.trim());
         System.out.println("ProductService: Found " + findProducts.size() + " products for query: " + query);
         return findProducts;
+    }
+
+    //categorical search via categories tab
+    public List<Product> searchByCategory(String categoryName) throws IllegalArgumentException
+    {
+        System.out.println("ProductService: Searching for category: " + categoryName);
+
+        try 
+        {
+            Category category = Category.valueOf(categoryName.trim().toUpperCase());
+            List<Product> categoryProducts = productRepository.findByCategory(category);
+            System.out.println("ProductService: Found " + categoryProducts.size() + " products in category: " + categoryName);
+            return categoryProducts;
+        } catch(IllegalArgumentException e)
+        {
+            System.out.println("ProductService: Invalid category name: " + categoryName);
+            return List.of();
+        }
     }
 
     //method for a user to add a product to the DB

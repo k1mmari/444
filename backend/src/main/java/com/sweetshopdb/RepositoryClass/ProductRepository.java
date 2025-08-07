@@ -23,8 +23,9 @@ public interface ProductRepository extends JpaRepository<Product, Integer>
 {
     List<Product> findByCategory(Category category);
     List<Product> findByProductNameContainingIgnoreCase(String productName);
+    List<Product> searchByCategory(String categoryName);
 
-    @Query("SELECT p FROM Product p WHERE " + "p.productName LIKE %:searchTerm%")
+    @Query("SELECT p FROM Product p WHERE p.productName LIKE CONCAT('%', :searchTerm, '%')")
     List<Product> searchProducts(@Param("searchTerm") String searchTerm);
 
     @Query("SELECT p FROM Product p WHERE " +

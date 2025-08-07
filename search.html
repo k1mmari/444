@@ -176,9 +176,22 @@
   <script>
     const params = new URLSearchParams(window.location.search);
     const query = params.get("q") || "";
-    document.getElementById("search-title").textContent = `Results for "${query}"`;
+    const category = params.get("category") || "";
 
-    fetch(`http://localhost:8080/api/search?q=${encodeURIComponent(query)}`)
+    if(category){
+      document.getElementById("search-title").textContent = `Results for category "${category}"`;
+    } else {
+    document.getElementById("search-title").textContent = `Results for "${query}"`;
+    }
+
+    let fetchUrl;
+    if(category){
+      fetchUrl = `http://localhost:8080/api/search/category/${encodeURIComponent(category)}`;
+    } else{
+      fetchUrl = `http://localhost:8080/api/search?q=${encodeURIComponent(query)}`
+    }
+
+    fetch(fetchUrl)
       .then((res) => res.json())
       .then((products) => {
         console.log("Results from backend:", products);
@@ -210,7 +223,7 @@
     }
 
         card.innerHTML = `
-          <div class="product-image" style="background-image: url('${product.imageURL || "/assets/placeholder.png"}')"></div>
+          <div class="product-image" style="background-image: url('${imagePath}')"></div>
           <h3 class="product-name">${product.productName}</h3>
           <p class="product-price">$${product.price.toFixed(2)}</p>
           <button class="add-to-cart">🛒</button>

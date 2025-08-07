@@ -44,6 +44,12 @@ public class SweetShopController
         return productService.searchProducts(q);
     }
 
+    @GetMapping("/search/category/{categoryName}")
+    public List<Product> searchByCategory(@PathVariable String categoryName)
+    {
+        return productService.searchByCategory(categoryName);
+    }
+
     //add product endpoint
     @PostMapping("/products")
     public Product addProduct(@RequestBody Product product) throws DataAccessException
