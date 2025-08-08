@@ -257,3 +257,57 @@ body {
     margin-top: 120px; 
     min-height: calc(100vh - 80px); 
 }
+
+.add-product-container {
+    width: 90%;
+    background-color: rgba(0, 0, 0, 0.6); /* translucent black */
+    padding: 0.5rem 3rem;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+}
+
+/* Add Product Input fields - matches signup styling */
+.add-product-container input,
+.add-product-container select {
+    width: 100%;
+    padding: 1rem;
+    margin: 0.5rem 0;
+    border-radius: 2rem;
+    border: none;
+    font-family: 'Droid Sans', sans-serif;
+    font-size: 1rem;
+}
+
+/* Add Product Button - matches signup styling */
+.add-product-container button {
+    background-color: white;
+    color: black;
+    font-weight: bold;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 2rem;
+    margin-top: 1rem;
+    cursor: pointer;
+    font-family: 'Droid Sans', sans-serif;
+}
+
+/* Add Product Button hover effect */
+.add-product-container button:hover {
+    background-color: #ddd;
+}
+
+/* Message styling for add product form */
+.add-product-container #message div {
+    padding: 1rem;
+    border-radius: 2rem;
+    margin: 0.5rem 0;
+    text-align: center;
+    font-family: 'Droid Sans', sans-serif;
+}

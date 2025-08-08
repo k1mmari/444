@@ -39,4 +39,9 @@ public class UserService
             userRepository.save(user);
             return "Signup successful! " + user.getFirstName() + " " + user.getLastName() + " has been added.";
     }
+
+    public boolean existsByUsername(String username)
+    {
+        return userRepository.existsByUsername(username);
+    }
 }

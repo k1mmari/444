@@ -8,6 +8,7 @@
 
 package com.sweetshopdb.ServiceClass;
 
+import java.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.sweetshopdb.EntityClass.Product;
@@ -20,6 +21,9 @@ public class ProductService
 {
     @Autowired //injects and initializes the ProductRepository bean
     private ProductRepository productRepository;
+
+    @Autowired //injects and initializes the UserService bean
+    private UserService userService;
 
     //method to return a search result for product name's (kit-kat)
     public List<Product> searchProducts(String query)
@@ -56,18 +60,39 @@ public class ProductService
     }
 
     //method for a user to add a product to the DB
-    public Product addProduct(Product product)
+    public Product addProduct(Product product, String username)
     {
+        LocalDate today = LocalDate.now();
+        int productsAddedToday = productRepository.userAddLimitPerDay(username, today);
+
+        if(productsAddedToday >= 2)
+        {
+            throw new IllegalArgumentException("User has reached the daily limit of 2 products.");
+        }
         //checks consistency constraints before adding new product
-        if(product.getProductName() == null 
-            || product.getProductID() <= 0 
+        if(product.getProductName() == null || product.getProductName().trim().isEmpty()
             || product.getPrice() <= 0 
-            || product.getCategory() == null 
-            || product.getStockQuantity() < 0)
+            || product.getCategory() == null)
         {
             throw new IllegalArgumentException("Invalid product details. Please try again."); 
         }
-        return productRepository.save(product);
+
+        boolean userExists = userService.existsByUsername(username);
+        if(!userExists)
+        {
+            throw new IllegalArgumentException("Username does not exist. Please sign up first and try again.");
+        }
+
+        if(product.getStockQuantity() <= 0) {
+        product.setStockQuantity(1);
+    }
+
+        product.setAddedByUsername(username);
+        product.setDateAdded(today);
+
+        System.out.println("ProductService: Adding product: " + product.getProductName() + " by user: " + username + " on " + today);
+        Product savedProduct = productRepository.save(product);
+        return savedProduct;
     }
     
 }

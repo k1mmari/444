@@ -10,6 +10,7 @@
 
 package com.sweetshopdb.RepositoryClass;
 
+import java.time.LocalDate;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -32,4 +33,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer>
             "LOWER(p.productName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
             "LOWER(p.description) LIKE LOWER(CONCAT('%', :searchTerm, '%'))")
     List<Product> searchProductsCaseInsensitive(@Param("searchTerm") String searchTerm);
+
+    @Query("SELECT COUNT(p) FROM Product p WHERE p.addedByUsername = :username AND p.dateAdded = :dateAdded")
+    int userAddLimitPerDay(@Param("username") String username, @Param("dateAdded") LocalDate dateAdded);
 }

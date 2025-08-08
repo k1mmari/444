@@ -52,9 +52,9 @@ public class SweetShopController
 
     //add product endpoint
     @PostMapping("/products")
-    public Product addProduct(@RequestBody Product product) throws DataAccessException
+    public Product addProduct(@RequestBody Product product, @RequestParam String username) throws DataAccessException
     {
-        return productService.addProduct(product);
+        return productService.addProduct(product, username);
     }
 
 }

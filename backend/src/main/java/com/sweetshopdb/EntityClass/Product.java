@@ -11,6 +11,7 @@ package com.sweetshopdb.EntityClass;
 
 import jakarta.persistence.*;
 import com.sweetshopdb.ENUMClass.Category;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "product")
@@ -35,10 +36,17 @@ public class Product {
     @Column(name = "stock_qty")
     private int stockQuantity;
 
+    @Column(name = "added_by_username")
+    private String addedByUsername;
+
+    @Column(name = "date_added")
+    private LocalDate dateAdded;
+
     //no arg constructor
     public Product() {}
 
-    public Product(int productID, String productName, double price, Category category, String description, String imageURL, int stockQuantity)
+    public Product(int productID, String productName, double price, Category category, String description, String imageURL, int stockQuantity, String addedByUsername,
+                   LocalDate dateAdded)
     {
         this.productID = productID;
         this.productName = productName;
@@ -47,6 +55,8 @@ public class Product {
         this.description = description;
         this.imageURL = imageURL;
         this.stockQuantity = stockQuantity;
+        this.addedByUsername = addedByUsername;
+        this.dateAdded = dateAdded;
     }
 
     //Setters
@@ -85,6 +95,16 @@ public class Product {
         this.stockQuantity = stockQuantity;
     }
 
+    public void setAddedByUsername(String addedByUsername)
+    {
+        this.addedByUsername = addedByUsername;
+    }
+
+    public void setDateAdded(LocalDate dateAdded)
+    {
+        this.dateAdded = dateAdded;
+    }
+
     //Getters
     public int getProductID()
     {
@@ -119,5 +139,15 @@ public class Product {
     public int getStockQuantity()
     {
         return stockQuantity;
+    }
+
+    public String getAddedByUsername()
+    {
+        return addedByUsername;
+    }
+
+    public LocalDate getDateAdded()
+    {
+        return dateAdded;
     }
 }

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Sweet Shop</title>
+    <link rel="stylesheet" href="style_signup.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Droid+Sans&display=swap" rel="stylesheet">
+</head>
+<body>
+     <header class="navbar">
+        <div class="nav-left">
+            <div class="logo">
+                <a href="index.html">
+                <img src="/assets/logo.png" alt="The Sweet Shop Logo" class="logo-img" />
+                </a>
+            </div>
+            <div class="profile-icon">
+                <a href="signup.html">
+                    <i data-lucide="user-circle"></i>
+                </a>
+            </div>
+            <div class="add-product-icon">
+                <a href="addProduct.html">
+                    <i data-lucide="plus-circle"></i>
+                </a>
+            </div>
+            <div class="nav-links">
+                <div class="categories-wrap">
+                    <a href="#" class="categories-tab" id="toggle-panel">Categories</a>
+                    <div class="side-panel" id="side-panel">
+                        <a href="search.html?category=GUMMIES" style="color: white;">Gummies</a>
+                        <a href="search.html?category=CHOCOLATE" style="color: white;">Chocolate</a>
+                        <a href="search.html?category=OTHER" style="color: white;">Other</a>
+                        <a href="search.html?category=ALL" style="color: white;">All</a>
+                    </div>
+                </div>
+                <a href="#">Best Sellers</a>
+                <a href="#">New</a>
+            </div>
+        </div>
+        <div class="nav-right">
+            <div class="search-bar">
+                <input id="searchInput" type="text" placeholder="Search..." />
+                <i data-lucide="search" id="searchIcon" style="color: white; margin-left: 1px;"></i>
+            </div>
+            <div class="cart-wrap">
+            <i data-lucide="shopping-cart" class="icon-cart"></i>
+            </div>
+        </div>
+    </header>
+    <main class="hero">
+        <div class="form-wrapper">
+            <h1 class="form-title">ADD PRODUCT</h1>
+                <div class="add-product-container">
+                    <div id="message" style="margin-bottom: 15px;"></div>
+                    <form id="add-product-form">
+                    <input id="productName" name="productName" type="text" placeholder="Product Name" required />
+                    <input id="productPrice" name="productPrice" type="number" step="0.01" placeholder="Price" required />
+                    <select name="category" required style="width: 100%; padding: 1rem; margin: 0.5rem 0; border-radius: 2rem; border: none; font-family: 'Droid Sans', sans-serif; font-size: 1rem;">
+                        <option value="">Select Category</option>
+                        <option value="GUMMIES">Gummies</option>
+                        <option value="CHOCOLATE">Chocolate</option>
+                        <option value="OTHER">Other</option>
+                    </select>
+                    <input id="productDescription" name="productDescription" type="text" placeholder="Description" />
+                    <input name="imageURL" type="url" placeholder="Image URL (optional)" />
+                    <input id="addedByUsername" name="addedByUsername" type="text" placeholder="Username" required />
+                    <button type="submit">Add Product</button>
+                    </form>
+            </div>
+        </div>
+    </main>
+
+
+        <script type="module">
+            import { createIcons, icons } from 'https://unpkg.com/lucide@latest/dist/esm/lucide.js';
+            createIcons({ icons });
+        </script>
+
+        <script>
+                document.getElementById('add-product-form').addEventListener('submit', async function(e) 
+            {
+                e.preventDefault();
+
+                const messageDiv = document.getElementById('message');
+                const formData = new FormData(e.target);
+            
+                const productData = {
+                    productName: formData.get('productName'),
+                    price: parseFloat(formData.get('productPrice')),
+                    category: formData.get('category'),
+                    description: formData.get('productDescription'),
+                    imageURL: formData.get('imageURL') || null,
+                    stockQuantity: 1
+                };
+
+                const username = formData.get('addedByUsername');
+
+                try {
+                    const response = await fetch(`http://localhost:8080/api/products?username=${username}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(productData)
+                    });
+
+        if (response.ok) {
+            messageDiv.innerHTML = '<div style="color: green; padding: 10px; background: #d4edda; border-radius: 5px; margin: 10px 0;">✅ Product added successfully!</div>';
+            document.getElementById('add-product-form').reset();
+        } else {
+            const errorText = await response.text();
+            let message = errorText;
+            
+            // Simple error message mapping
+            if (errorText.includes('daily limit')) {
+                message = 'Daily limit reached! You can only add 2 products per day.';
+            } else if (errorText.includes('Username does not exist')) {
+                message = 'Username not found. Please sign up first.';
+            }
+            
+            messageDiv.innerHTML = `<div style="color: red; padding: 10px; background: #f8d7da; border-radius: 5px; margin: 10px 0;">❌ ${message}</div>`;
+        }
+    } catch (error) {
+        messageDiv.innerHTML = '<div style="color: red; padding: 10px; background: #f8d7da; border-radius: 5px; margin: 10px 0;">❌ Network error. Please try again.</div>';
+    }
+});
+</script>
+
+         <script>
+            const toggleBtn = document.getElementById("toggle-panel");
+            const sidePanel = document.getElementById("side-panel");
+
+            toggleBtn.addEventListener("click", (e) => {
+            e.preventDefault(); // stop page jump
+            sidePanel.classList.toggle("open");
+            });
+            const searchInput = document.getElementById("searchInput");
+      const searchIcon = document.getElementById("searchIcon");
+
+      if (searchInput) {
+        searchInput.addEventListener("keydown", function (e) {
+          if (e.key === "Enter") {
+            const query = searchInput.value.trim();
+            if (query) {
+              window.location.href = `/search.html?q=${encodeURIComponent(query)}`;
+            }
+          }
+        });
+      }
+
+      if (searchIcon) {
+        searchIcon.addEventListener("click", function () {
+          const query = searchInput.value.trim();
+          if (query) {
+            window.location.href = `/search.html?q=${encodeURIComponent(query)}`;
+          }
+        });
+      }
+        </script>
+    </body>
+</html>
