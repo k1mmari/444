@@ -1,1 +1,3 @@
 SELECT * FROM user;
+SHOW TABLES;
+SELECT * FROM product;

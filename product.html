@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Product — The Sweet Shop</title>
+    <link rel="stylesheet" href="style_signup.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Droid+Sans&display=swap" rel="stylesheet">
+    <style>
+        :root{
+            --glass: rgba(255,255,255,0.08);
+            --pill: rgba(255,255,255,0.16);
+            --accent:#B8EEB2;
+            --shadow: 0 18px 50px rgba(0,0,0,.45);
+        }
+        html, body {
+            margin:0;
+            height: 100%;
+        }
+        body{
+            background:#111 url('assets/bg2.png') center/cover fixed no-repeat;
+            font-family:'Droid Sans', sans-serif; 
+            color:#fff;
+            display: flex;
+            flex-direction: column;
+        }
+        /* Centering wrapper */
+        .page{
+            flex: 1;
+            display: flex;
+            align-items: center;   
+            justify-content: center;
+            padding: 24px 0;
+            align-items: flex-start;
+            padding-top: 80px; 
+            transform: translateY(40px);
+        }
+        .wrap{
+            max-width:1100px;
+            background:rgba(0,0,0,.55);
+            border-radius:28px;
+            box-shadow:var(--shadow);
+            padding:24px;
+        }
+        .product-row{
+            display:grid;
+            grid-template-columns:320px 1fr;
+            gap:24px;
+            align-items:start;
+        }
+        .product-card{
+            background:var(--glass);
+            border-radius:18px;
+            padding:14px;
+            box-shadow:var(--shadow);
+            backdrop-filter:blur(8px);
+        }
+        .product-title{
+            font-family:'Droid Sans', sans-serif;
+            font-size:42px;
+            margin:0 0 10px;
+            text-align: center;
+        }
+        .product-media{
+            width:100%;
+            height:200px;
+            border-radius:16px;
+            background:#1d1d1d center/contain no-repeat;
+            box-shadow:inset 0 0 0 1px rgba(255,255,255,.06);
+        }
+        .price{
+            font-size:28px;
+            font-weight:700;
+            margin:16px 0 10px;
+            text-align: center;
+        }
+        .btn-container {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 0.5px;
+        }
+        .btn{
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1px;
+            border: none;
+            cursor: pointer;
+            font-weight: 700;
+            padding: 10px 18px;
+            border-radius: 999px;
+            width: 160px;
+        }
+        .btn-add{
+            background:var(--accent);
+            color:#0b2a0b;
+        }
+        .btn-review{
+            background:rgba(120,160,255,.18);
+            color:#e8efff;
+            border:1px solid rgba(180,200,255,.25);
+        }
+        .reviews-col{
+            display:flex;
+            flex-direction:column;
+            gap:18px;
+            max-height:60vh; /* stops reviews from pushing card to top */
+            overflow-y:auto;
+        }
+        .review-pill{
+            display:grid;
+            grid-template-columns:54px 1fr;
+            gap:14px;
+            align-items:center;
+            padding:14px 18px;
+            border-radius:26px;
+            background:var(--pill);
+            backdrop-filter:blur(6px);
+            box-shadow:var(--shadow);
+        }
+        .avatar{
+            width:54px;
+            height:54px;
+            border-radius:50%;
+            background: radial-gradient(circle at 30% 30%, #444, #222);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-size:22px;
+        }
+        .r-name{font-weight:700} 
+        .stars{color:#86f28b; letter-spacing:2px; font-size:14px; margin-left:6px} 
+        .r-text{color:#dcdcdc; margin-top:4px}
+        .modal{
+            position:fixed;
+            inset:0;
+            display:none;
+            align-items:center;
+            justify-content:center;
+            background:rgba(0,0,0,.55);
+            backdrop-filter:blur(2px);
+            z-index:50;
+        }
+        .modal.open{display:flex;}
+        .modal-card{
+            width:min(560px,92vw);
+            background:#151515;
+            border-radius:18px;
+            padding:20px;
+            box-shadow:var(--shadow);
+            border:1px solid rgba(255,255,255,.08);
+        }
+        .modal-card h3{
+            margin:0 0 10px;
+            font-family:'Playfair Display',serif;
+        }
+        .stars-input{
+            display:flex;
+            gap:6px;
+            font-size:24px;
+            cursor:pointer;
+            margin:6px 0 8px
+        }
+        .stars-input .s{filter:grayscale(1) brightness(.7);} 
+        .stars-input .s.active{filter:none; color:#86f28b;}
+        textarea{
+            width:100%;
+            min-height:110px;
+            background:#101010;
+            color:#fff;
+            border:1px solid rgba(255,255,255,.12);
+            border-radius:12px;
+            padding:12px;
+        }
+        .modal-actions{
+            display:flex;
+            justify-content:flex-end;
+            gap:12px;
+            margin-top:12px
+        }
+        .btn-ghost{
+            background:transparent;
+            color:#ddd;
+            border:1px solid rgba(255,255,255,.2)
+        }
+        @media (max-width:860px){ 
+            .product-row{grid-template-columns:1fr;} 
+            .product-media{height:260px;} 
+            .product-title{font-size:36px;} 
+        }
+        /* put in your <style> with the others */
+      .btn-del {
+        background: transparent;
+        border: 1px solid rgba(255,255,255,.25);
+        color: #ddd;
+        padding: 4px 10px;
+        border-radius: 999px;
+        font-size: 12px;
+        cursor: pointer;
+        margin-left: 8px;
+      }
+.btn-del:hover { border-color: rgba(255,255,255,.45); }
+    </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="navbar">
+      <div class="nav-left">
+      <div class="logo">
+        <a href="./">
+          <img src="/assets/logo.png" alt="The Sweet Shop Logo" class="logo-img" />
+        </a>
+      </div>
+      <div class="profile-icon">
+        <a href="signup.html">
+          <i data-lucide="user-circle"></i>
+        </a>
+      </div>
+      <div class="nav-links">
+        <div class="categories-wrap">
+          <a href="#" class="categories-tab" id="toggle-panel">Categories</a>
+          <div class="side-panel" id="side-panel">
+            <a href="#" style="color: white;">Candies</a>
+            <a href="#" style="color: white;">Cookies</a>
+            <a href="#" style="color: white;">Bundles</a>
+            <a href="#" style="color: white;">All</a>
+          </div>
+        </div>
+        <a href="#">Best Sellers</a>
+        <a href="#">New</a>
+      </div>
+    </div>
+    <div class="nav-right">
+      <div class="search-bar">
+        <input id="searchInput" type="text" placeholder="Search..." />
+        <i data-lucide="search" id="searchIcon" style="color: white; margin-left: 1px;"></i>
+      </div>
+      <div class="cart-wrap">
+        <i data-lucide="shopping-cart" class="icon-cart"></i>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTENT -->
+  <main class="page">
+    <div class="wrap">
+      <div class="product-row">
+        <!-- Left -->
+        <section class="product-card" id="productCard">
+          <h1 class="product-title" id="pName">Tokyo Banana</h1>
+          <div class="product-media" id="pImage" style="background-image:url('/kitkat_sanrio.png')"></div>
+          <div class="price" id="pPrice">$10.99</div>
+          <div class="btn-container">
+            <button class="btn btn-add" id="addToCart">Add to Cart 🛒</button><br/>
+            <button class="btn btn-review" id="openReview">Review ✏️</button>
+          </div>
+         
+        </section>
+
+        <!-- Right -->
+        <aside class="reviews-col" id="reviewsList">
+          <article class="review-pill">
+            <div class="avatar">👤</div>
+            <div>
+              <div><span class="r-name">Mariia K.</span><span class="stars">★★★★★</span></div>
+              <div class="r-text">Best snack in the world. 10/10</div>
+            </div>
+          </article>
+          <article class="review-pill">
+            <div class="avatar">👤</div>
+            <div>
+              <div><span class="r-name">Alfredo C.</span><span class="stars">★★★★☆</span></div>
+              <div class="r-text">Could be better</div>
+            </div>
+          </article>
+          <article class="review-pill">
+            <div class="avatar">👤</div>
+            <div>
+              <div><span class="r-name">Jesus M.</span><span class="stars">★★★☆☆</span></div>
+              <div class="r-text">Mid</div>
+            </div>
+          </article>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <!-- Review Modal -->
+  <div class="modal" id="reviewModal">
+    <div class="modal-card">
+      <h3>Leave a Review</h3>
+      <div class="stars-input" id="starsInput"><span class="s">★</span><span class="s">★</span><span class="s">★</span><span class="s">★</span><span class="s">★</span></div>
+      <textarea id="reviewText" placeholder="What did you think?"></textarea>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" id="cancelReview">Cancel</button>
+        <button class="btn btn-add" id="submitReview">Submit</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lucide icons -->
+  <script type="module">
+    import { createIcons, icons } from 'https://unpkg.com/lucide@latest/dist/esm/lucide.js';
+    createIcons({ icons });
+  </script>
+
+ <!-- JS for interactions -->
+<script>
+  // ===== Header: categories toggle + search redirect =====
+  const toggleBtn = document.getElementById("toggle-panel");
+  const sidePanel = document.getElementById("side-panel");
+  toggleBtn?.addEventListener("click", (e) => {
+    e.preventDefault();
+    sidePanel.classList.toggle("open");
+  });
+
+  const searchInput = document.getElementById("searchInput");
+  const searchIcon = document.getElementById("searchIcon");
+  function goSearch() {
+    const q = searchInput.value.trim();
+    if (q) window.location.href = `/search.html?q=${encodeURIComponent(q)}`;
+  }
+  searchInput?.addEventListener("keydown", (e) => e.key === "Enter" && goSearch());
+  searchIcon?.addEventListener("click", goSearch);
+
+  // ===== Product context (for later backend hookup) =====
+  const params = new URLSearchParams(location.search);
+  const productId = params.get("id") || "1"; // TODO: real id from URL
+
+  // ===== Review modal + star picker =====
+  const modal = document.getElementById("reviewModal");
+  document.getElementById("openReview").addEventListener("click", () => modal.classList.add("open"));
+  document.getElementById("cancelReview").addEventListener("click", () => modal.classList.remove("open"));
+
+  const starsEl = document.getElementById("starsInput");
+  let selectedStars = 5;
+  [...starsEl.children].forEach((star, i) => {
+    const paint = (n) =>
+      [...starsEl.children].forEach((s, idx) => s.classList.toggle("active", idx <= n));
+    paint(selectedStars - 1);
+    star.addEventListener("mouseenter", () => paint(i));
+    star.addEventListener("mouseleave", () => paint(selectedStars - 1));
+    star.addEventListener("click", () => {
+      selectedStars = i + 1;
+      paint(i);
+    });
+  });
+
+  // ===== Current user (placeholder; replace with /api/me later) =====
+  let currentUser = { name: "You" };
+
+  // ===== Helpers =====
+  function starsString(n) {
+    return "★★★★★".slice(0, n) + "☆☆☆☆☆".slice(0, 5 - n);
+  }
+
+  // owned=true -> show Delete button; id used for backend later
+  function addReviewCard({ id = `temp_${Date.now()}`, author = "You", stars = 5, text = "", owned = false }) {
+    const box = document.getElementById("reviewsList");
+    const el = document.createElement("article");
+    el.className = "review-pill";
+    el.dataset.reviewId = id;
+
+    el.innerHTML = `
+      <div class="avatar">👤</div>
+      <div>
+        <div>
+          <span class="r-name"></span>
+          <span class="stars"></span>
+          ${owned ? '<button class="btn-del" title="Delete my review">Delete</button>' : ""}
+        </div>
+        <div class="r-text"></div>
+      </div>
+    `;
+    el.querySelector(".r-name").textContent = author;
+    el.querySelector(".stars").textContent = starsString(stars);
+    el.querySelector(".r-text").textContent = text; // avoid HTML injection
+
+    box.prepend(el); // use appendChild(el) to place at bottom
+  }
+
+  // ===== Delete my review (frontend-only; ready for backend) =====
+  document.getElementById("reviewsList").addEventListener("click", async (e) => {
+    if (!e.target.classList.contains("btn-del")) return;
+    const pill = e.target.closest(".review-pill");
+    const reviewId = pill?.dataset.reviewId;
+    if (!pill) return;
+
+    // Frontend remove now
+    pill.remove();
+
+    // TODO (backend): call DELETE
+    // await fetch(`/api/products/${productId}/reviews/${reviewId}`, { method: "DELETE" });
+  });
+
+  // ===== Submit new review =====
+  document.getElementById("submitReview").addEventListener("click", async () => {
+    const textEl = document.getElementById("reviewText");
+    const text = textEl.value.trim();
+    if (!text) return alert("Write something first!");
+
+    // Frontend optimistic add
+    addReviewCard({
+      author: currentUser?.name || "You",
+      stars: selectedStars,
+      text,
+      owned: true
+    });
+
+    // TODO (backend): POST then refresh/patch with real id
+    // const res = await fetch(`/api/products/${productId}/reviews`, {
+    //   method: "POST",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify({ stars: selectedStars, text })
+    // });
+    // const saved = await res.json();
+    // Option A: reload list  -> await loadReviews(productId)
+    // Option B: patch temp id -> replace pill.dataset.reviewId = saved.id
+
+    // reset + close
+    textEl.value = "";
+    selectedStars = 5;
+    [...starsEl.children].forEach((s, i) => s.classList.toggle("active", i < selectedStars));
+    modal.classList.remove("open");
+  });
+
+  // ===== Optional: load reviews from backend later =====
+  // async function loadReviews(id) {
+  //   const res = await fetch(`/api/products/${id}/reviews`);
+  //   const list = await res.json();
+  //   const box = document.getElementById("reviewsList");
+  //   box.innerHTML = "";
+  //   list.forEach(r => addReviewCard({ id: r.id, author: r.author, stars: r.stars, text: r.text, owned: r.owned }));
+  // }
+  // loadReviews(productId); // uncomment when endpoint exists
+</script>
+
+</body>
+</html>
