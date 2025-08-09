@@ -9,11 +9,16 @@
 package com.sweetshopdb.ControllerClass;
 
 import java.util.List;
+import java.util.Optional;
 
 //spring boot imports
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import com.sweetshopdb.EntityClass.*;
 import com.sweetshopdb.ServiceClass.*;
 
@@ -55,6 +60,32 @@ public class SweetShopController
     public Product addProduct(@RequestBody Product product, @RequestParam String username) throws DataAccessException
     {
         return productService.addProduct(product, username);
+    }
+
+    @GetMapping("/products/{id}")
+    public ResponseEntity<Product> getProductById(@PathVariable int id)
+    {
+        try
+        {
+            Optional<Product> product = productService.findById(id);
+            if(product.isPresent())
+            {
+                return ResponseEntity.ok(product.get());
+            }
+            else
+            {
+                return ResponseEntity.notFound().build();
+            }
+        }   catch(Exception e)
+            {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            }
+    }
+
+    @GetMapping("/products/category/{categoryName}")
+    public List<Product> getProductsByCategory(@PathVariable String categoryName)
+    {
+        return productService.searchByCategory(categoryName);
     }
 
 }

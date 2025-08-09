@@ -9,11 +9,16 @@
 package com.sweetshopdb.ServiceClass;
 
 import java.time.LocalDate;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import com.sweetshopdb.EntityClass.Product;
 import com.sweetshopdb.RepositoryClass.ProductRepository;
+
 import java.util.List;
+import java.util.Optional;
+
 import com.sweetshopdb.ENUMClass.Category;
 
 @Service
@@ -95,4 +100,9 @@ public class ProductService
         return savedProduct;
     }
     
+    //method to find a product by its ID
+    public Optional<Product> findById(int id)
+    {
+        return productRepository.findById(id);
+    }
 }

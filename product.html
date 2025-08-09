@@ -219,14 +219,19 @@
           <i data-lucide="user-circle"></i>
         </a>
       </div>
+      <div class="add-product-icon">
+        <a href="addProduct.html">
+          <i data-lucide="plus-circle"></i>
+        </a>
+      </div>
       <div class="nav-links">
         <div class="categories-wrap">
           <a href="#" class="categories-tab" id="toggle-panel">Categories</a>
           <div class="side-panel" id="side-panel">
-            <a href="#" style="color: white;">Candies</a>
-            <a href="#" style="color: white;">Cookies</a>
-            <a href="#" style="color: white;">Bundles</a>
-            <a href="#" style="color: white;">All</a>
+            <a href="search.html?category=GUMMIES" style="color: white;">Gummies</a>
+            <a href="search.html?category=CHOCOLATE" style="color: white;">Chocolate</a>
+            <a href="search.html?category=OTHER" style="color: white;">Other</a>
+            <a href="search.html" style="color: white;">All</a>
           </div>
         </div>
         <a href="#">Best Sellers</a>
@@ -327,8 +332,42 @@
   searchIcon?.addEventListener("click", goSearch);
 
   // ===== Product context (for later backend hookup) =====
-  const params = new URLSearchParams(location.search);
-  const productId = params.get("id") || "1"; // TODO: real id from URL
+  document.addEventListener('DOMContentLoaded', async function() {
+    const params = new URLSearchParams(location.search);
+    const productId = params.get("id");
+  
+  console.log('Product ID from URL:', productId);
+    if(productId && productId !== "undefined" && !isNaN(productId)) {
+      await loadProduct(productId);
+    }
+  });
+
+  async function loadProduct(id) {
+    console.log('Loading product with ID:', id);
+    try {
+      const response = await fetch(`http://localhost:8080/api/products/${id}`);
+      if(response.ok) {
+        const product = await response.json();
+        displayProduct(product);
+      } else {
+        console.error('Product not found');
+        document.getElementById('pName').textContent = 'Product not found';
+      }
+    } catch(error) {
+      console.error('Error loading product:', error);
+      document.getElementById('pName').textContent = 'Error loading product';
+    }
+  }
+
+  function displayProduct(product) {
+    document.getElementById('pName').textContent = product.productName;
+    document.getElementById('pPrice').textContent = `$${product.price.toFixed(2)}`;
+    document.title = `${product.productName} — The Sweet Shop`;
+
+    if(product.imageURL) {
+      document.getElementById('pImage').style.backgroundImage = `url(http://localhost:8080${product.imageURL})`;
+    }
+  }
 
   // ===== Review modal + star picker =====
   const modal = document.getElementById("reviewModal");
