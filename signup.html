@@ -51,7 +51,7 @@
         </div>
     </header>
     <main class="hero">
-        <div class="form-wrapper">
+        <div id="signup-section" class="form-wrapper active">
             <h1 class="form-title">SIGN UP</h1>
                 <div class="signup-container">
                     <form id="signup-form">
@@ -64,6 +64,17 @@
                     <button type="submit">Sign Up</button>
                     </form>
             </div>
+        </div>
+
+        <div id="login-section" class="form-wrapper">
+            <h1 class="form-title">LOG IN</h1>
+                <div class="login-container">
+                    <form id="login-form">
+                        <input id="login-username" type="text" placeholder="Username..." />
+                        <input id="login-password" type="password" placeholder="Password..." />
+                        <button type="submit">Log In</button>
+                    </form>
+                </div>
         </div>
     </main>
         <script type="module">
@@ -105,7 +116,7 @@
                     email
                 };
                 try {
-                    const response = await fetch('http://localhost:8080/signup', {
+                    const response = await fetch('http://localhost:8080/api/signup', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(data)
@@ -116,6 +127,45 @@
             } catch (error) {
                 console.error("Signup failed:", error);
                 alert("An error occurred. Please try again later.");
+        }
+    });
+
+    //login handler
+    document.getElementById('login-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const username = document.getElementById('login-username').value.trim();
+        const password = document.getElementById('login-password').value.trim();
+
+        if(!username || !password){
+            alert("please fill in all fields");
+            return;
+        }
+
+        const data = {
+            username,
+            password
+        };
+
+        try {
+            const response = await fetch('http://localhost:8080/api/login', {
+                method: 'POST', 
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.text();
+
+            if(response.ok && result.includes("Login successful")) {
+                alert("Login successful! Redirecting to home page.");
+                window.location.href = 'index.html'; 
+            }
+            else {
+                alert(result);
+            }
+        } catch (error) {
+            console.error("Login failed:", error);
+            alert("An error occurred. Please try again.");
         }
     });
 </script>

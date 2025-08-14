@@ -203,8 +203,8 @@ body {
     flex-direction: column;
     align-items: center;
     width: 100%;
-    max-width: 480px; /* Adjust as needed */
-    margin: 0 auto;
+    max-width: 400px; /* Adjust as needed */
+    margin: 0;
 }
 
 .form-title {
@@ -255,7 +255,12 @@ body {
     width: 100%;
     height: 100vh;
     margin-top: 120px; 
-    min-height: calc(100vh - 80px); 
+    min-height: calc(100vh - 80px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 3rem; /* Space between the two forms */
+    padding: 2rem;
 }
 
 .add-product-container {
@@ -310,4 +315,48 @@ body {
     margin: 0.5rem 0;
     text-align: center;
     font-family: 'Droid Sans', sans-serif;
+}
+
+.login-container {
+    width: 90%;
+    background-color: rgba(0, 0, 0, 0.6); /* translucent black */
+    padding: 0.5rem 3rem;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+}
+
+/* Login Input fields - matches signup styling */
+.login-container input {
+    width: 100%;
+    padding: 1rem;
+    margin: 0.5rem 0;
+    border-radius: 2rem;
+    border: none;
+    font-family: 'Droid Sans', sans-serif;
+    font-size: 1rem;
+}
+
+/* Login Button - matches signup styling */
+.login-container button {
+    background-color: white;
+    color: black;
+    font-weight: bold;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 2rem;
+    margin-top: 1rem;
+    cursor: pointer;
+    font-family: 'Droid Sans', sans-serif;
+}
+
+/* Login Button hover effect */
+.login-container button:hover {
+    background-color: #ddd;
 }

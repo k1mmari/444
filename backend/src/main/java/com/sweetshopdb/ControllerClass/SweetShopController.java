@@ -49,6 +49,7 @@ public class SweetShopController
         return productService.searchProducts(q);
     }
 
+    //search endpoint to get products by category tab
     @GetMapping("/search/category/{categoryName}")
     public List<Product> searchByCategory(@PathVariable String categoryName)
     {
@@ -62,30 +63,33 @@ public class SweetShopController
         return productService.addProduct(product, username);
     }
 
+    //endpoint to search for product by id
     @GetMapping("/products/{id}")
     public ResponseEntity<Product> getProductById(@PathVariable int id)
     {
-        try
-        {
-            Optional<Product> product = productService.findById(id);
-            if(product.isPresent())
-            {
-                return ResponseEntity.ok(product.get());
-            }
-            else
-            {
-                return ResponseEntity.notFound().build();
-            }
-        }   catch(Exception e)
-            {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-            }
+    try 
+    {
+        Product product = productService.getProductById(id);
+        return ResponseEntity.ok(product);
+    } catch (IllegalArgumentException e) 
+    {
+        return ResponseEntity.notFound().build();
+    } catch (Exception e) 
+    {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
     }
 
+    //endpoint to search for products by category name from search bar
     @GetMapping("/products/category/{categoryName}")
     public List<Product> getProductsByCategory(@PathVariable String categoryName)
     {
         return productService.searchByCategory(categoryName);
     }
 
+    @PostMapping("/login")
+    public String login(@RequestBody User user) throws DataAccessException
+    {
+        return userService.loginUser(user);
+    }
 }

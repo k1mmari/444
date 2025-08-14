@@ -131,7 +131,17 @@
             font-size:22px;
         }
         .r-name{font-weight:700} 
-        .stars{color:#86f28b; letter-spacing:2px; font-size:14px; margin-left:6px} 
+        .rating-badge{
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+        .rating-excellent{background: #4CAF50; color: white;}
+        .rating-good{background: #8BC34A; color: white;}
+        .rating-fair{background: #FF9800; color: white;}
+        .rating-poor{background: #F44336; color: white;}
         .r-text{color:#dcdcdc; margin-top:4px}
         .modal{
             position:fixed;
@@ -156,15 +166,23 @@
             margin:0 0 10px;
             font-family:'Playfair Display',serif;
         }
-        .stars-input{
-            display:flex;
-            gap:6px;
-            font-size:24px;
-            cursor:pointer;
-            margin:6px 0 8px
+        .rating-dropdown-container{
+            margin-bottom: 15px;
         }
-        .stars-input .s{filter:grayscale(1) brightness(.7);} 
-        .stars-input .s.active{filter:none; color:#86f28b;}
+        .rating-dropdown-container label{
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        .rating-dropdown{
+            width: 100%;
+            padding: 10px;
+            background: #101010;
+            color: #fff;
+            border: 1px solid rgba(255,255,255,.12);
+            border-radius: 8px;
+            font-size: 14px;
+        }
         textarea{
             width:100%;
             min-height:110px;
@@ -255,9 +273,9 @@
       <div class="product-row">
         <!-- Left -->
         <section class="product-card" id="productCard">
-          <h1 class="product-title" id="pName">Tokyo Banana</h1>
-          <div class="product-media" id="pImage" style="background-image:url('/kitkat_sanrio.png')"></div>
-          <div class="price" id="pPrice">$10.99</div>
+          <h1 class="product-title" id="pName">Loading...</h1>
+          <div class="product-media" id="pImage"></div>
+          <div class="price" id="pPrice">$0.00</div>
           <div class="btn-container">
             <button class="btn btn-add" id="addToCart">Add to Cart 🛒</button><br/>
             <button class="btn btn-review" id="openReview">Review ✏️</button>
@@ -267,27 +285,7 @@
 
         <!-- Right -->
         <aside class="reviews-col" id="reviewsList">
-          <article class="review-pill">
-            <div class="avatar">👤</div>
-            <div>
-              <div><span class="r-name">Mariia K.</span><span class="stars">★★★★★</span></div>
-              <div class="r-text">Best snack in the world. 10/10</div>
-            </div>
-          </article>
-          <article class="review-pill">
-            <div class="avatar">👤</div>
-            <div>
-              <div><span class="r-name">Alfredo C.</span><span class="stars">★★★★☆</span></div>
-              <div class="r-text">Could be better</div>
-            </div>
-          </article>
-          <article class="review-pill">
-            <div class="avatar">👤</div>
-            <div>
-              <div><span class="r-name">Jesus M.</span><span class="stars">★★★☆☆</span></div>
-              <div class="r-text">Mid</div>
-            </div>
-          </article>
+          <div class="no-reviews">No reviews yet. Be the first to review!</div>
         </aside>
       </div>
     </div>
@@ -297,8 +295,19 @@
   <div class="modal" id="reviewModal">
     <div class="modal-card">
       <h3>Leave a Review</h3>
-      <div class="stars-input" id="starsInput"><span class="s">★</span><span class="s">★</span><span class="s">★</span><span class="s">★</span><span class="s">★</span></div>
-      <textarea id="reviewText" placeholder="What did you think?"></textarea>
+      
+      <!-- Rating dropdown -->
+      <div class="rating-dropdown-container">
+        <label for="ratingSelect">Rating:</label>
+        <select id="ratingSelect" class="rating-dropdown">
+          <option value="EXCELLENT">Excellent</option>
+          <option value="GOOD">Good</option>
+          <option value="FAIR">Fair</option>
+          <option value="POOR">Poor</option>
+        </select>
+      </div>
+      
+      <textarea id="reviewText" placeholder="Write your review description here..."></textarea>
       <div class="modal-actions">
         <button class="btn btn-ghost" id="cancelReview">Cancel</button>
         <button class="btn btn-add" id="submitReview">Submit</button>
@@ -330,6 +339,7 @@
   }
   searchInput?.addEventListener("keydown", (e) => e.key === "Enter" && goSearch());
   searchIcon?.addEventListener("click", goSearch);
+  
 
   // ===== Product context (for later backend hookup) =====
   document.addEventListener('DOMContentLoaded', async function() {
@@ -372,53 +382,60 @@
   // ===== Review modal + star picker =====
   const modal = document.getElementById("reviewModal");
   document.getElementById("openReview").addEventListener("click", () => modal.classList.add("open"));
-  document.getElementById("cancelReview").addEventListener("click", () => modal.classList.remove("open"));
+  document.getElementById("cancelReview").addEventListener("click", () => {modal.classList.remove("open");
+  resetModal();});
 
-  const starsEl = document.getElementById("starsInput");
-  let selectedStars = 5;
-  [...starsEl.children].forEach((star, i) => {
-    const paint = (n) =>
-      [...starsEl.children].forEach((s, idx) => s.classList.toggle("active", idx <= n));
-    paint(selectedStars - 1);
-    star.addEventListener("mouseenter", () => paint(i));
-    star.addEventListener("mouseleave", () => paint(selectedStars - 1));
-    star.addEventListener("click", () => {
-      selectedStars = i + 1;
-      paint(i);
-    });
+      function resetModal() {
+      document.getElementById("ratingSelect").value = "EXCELLENT";
+      document.getElementById("reviewText").value = "";
+    }
+
+  // ===== Submit review =====
+  document.getElementById("submitReview").addEventListener("click", () => {
+    const rating = document.getElementById("ratingSelect").value;
+    const text = document.getElementById("reviewText").value.trim();
+    const username = document.getElementById("username").value.trim();
+    
+    if (!text) {
+      alert("Please write a review description!");
+      return;
+    }
+
+    // Backend will handle submission
+    alert(`Review submitted!\nRating: ${rating}\nUser: ${username}`);
+    modal.classList.remove("open");
+    resetModal();
   });
 
-  // ===== Current user (placeholder; replace with /api/me later) =====
-  let currentUser = { name: "You" };
-
   // ===== Helpers =====
-  function starsString(n) {
-    return "★★★★★".slice(0, n) + "☆☆☆☆☆".slice(0, 5 - n);
-  }
-
   // owned=true -> show Delete button; id used for backend later
-  function addReviewCard({ id = `temp_${Date.now()}`, author = "You", stars = 5, text = "", owned = false }) {
-    const box = document.getElementById("reviewsList");
+  function addReviewCard(review) {
+    const container = document.getElementById("reviewsList");
+    const noReviews = container.querySelector(".no-reviews");
+    if (noReviews) noReviews.remove();
+
     const el = document.createElement("article");
     el.className = "review-pill";
-    el.dataset.reviewId = id;
+    el.dataset.reviewId = review.id || Date.now();
+
+    const rating = `rating-${review.rating.toLowerCase()}`;
 
     el.innerHTML = `
       <div class="avatar">👤</div>
       <div>
         <div>
-          <span class="r-name"></span>
+          <span class="r-name">$</span>
           <span class="stars"></span>
           ${owned ? '<button class="btn-del" title="Delete my review">Delete</button>' : ""}
         </div>
         <div class="r-text"></div>
       </div>
     `;
-    el.querySelector(".r-name").textContent = author;
-    el.querySelector(".stars").textContent = starsString(stars);
-    el.querySelector(".r-text").textContent = text; // avoid HTML injection
+    el.querySelector(".r-name").textContent = username;
+    el.querySelector(".stars").textContent = starsString(rating);
+    el.querySelector(".r-text").textContent = reviewDescription; // avoid HTML injection
 
-    box.prepend(el); // use appendChild(el) to place at bottom
+    box.appendChild(el); // use appendChild(el) to place at bottom
   }
 
   // ===== Delete my review (frontend-only; ready for backend) =====

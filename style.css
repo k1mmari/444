@@ -176,12 +176,43 @@ body {
     margin-left: auto;
 }
 
-
 /* Hero background */
 .hero {
     width: 100%;
     height: 100vh;
 }
 
+/* Rating dropdown styles */
+.rating-dropdown-container {
+  margin: 10px 0 15px 0;
+}
+
+.rating-dropdown-container label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.rating-dropdown {
+  width: 100%;
+  padding: 8px 12px;
+  background: #101010;
+  color: #fff;
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: 'Droid Sans', sans-serif;
+}
+
+.rating-dropdown:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.rating-dropdown option {
+  background: #101010;
+  color: #fff;
+}
 
 

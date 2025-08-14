@@ -18,8 +18,10 @@ import com.sweetshopdb.EntityClass.User;
 public interface UserRepository extends JpaRepository<User, String>
 {
     //additional custom queries can be defined here, built in methods are already provided by JpaRepository
-    public boolean existsByUsername(String username);
-    public boolean existsByEmail(String email);
+    boolean existsByUsername(String username);
+    boolean existsByEmail(String email);
+    boolean existsByPassword(String password);
+    User findFirstByUsername(String username);
     List<User> findByFirstNameContainingIgnoreCase(String firstName);
     List<User> findByLastNameContainingIgnoreCase(String lastName);
     List<User> findByUsername(String username);

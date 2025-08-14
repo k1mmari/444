@@ -44,4 +44,21 @@ public class UserService
     {
         return userRepository.existsByUsername(username);
     }
+
+    public String loginUser(User user)
+    {
+        if(!userRepository.existsByUsername(user.getUsername()))
+        {
+            return "Username doesn't exist!";
+        }
+
+        // Find the user by username and check if password matches
+        User existingUser = userRepository.findFirstByUsername(user.getUsername());
+        if(existingUser == null || !existingUser.getPassword().equals(user.getPassword()))
+        {
+            return "Invalid password!";
+        }
+
+        return "Login successful!";
+    }
 }
