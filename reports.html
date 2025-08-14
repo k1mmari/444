@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Sweet Shop</title>
+    <link rel="stylesheet" href="style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Droid+Sans&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="navbar">
+    <div class="nav-left">
+        <div class="logo">
+            <a href="./">
+                <img src="/assets/logo.png" alt="The Sweet Shop Logo" class="logo-img" />
+            </a>
+        </div>
+    <div class="profile-icon">
+        <a href="signup.html">
+            <i data-lucide="user-circle"></i>
+        </a>
+    </div>
+    <div class="add-product-icon">
+        <a href="addProduct.html">
+            <i data-lucide="plus-circle"></i>
+        </a>
+    </div>
+    <div class="nav-links">
+        <div class="categories-wrap">
+            <a href="#" class="categories-tab" id="toggle-panel">Categories</a>
+            <div class="side-panel" id="side-panel">
+                <a href="search.html?category=GUMMIES" style="color: white;">Gummies</a>
+                <a href="search.html?category=CHOCOLATE" style="color: white;">Chocolate</a>
+                <a href="search.html?category=OTHER" style="color: white;">Other</a>
+                <a href="search.html" style="color: white;">All</a>
+            </div>
+        </div>
+        <a href="#">Best Sellers</a>
+        <a href="#">New</a>
+    </div>
+</div>
+<div class="nav-right">
+    <div class="search-bar">
+        <input id="searchInput" type="text" placeholder="Search..." />
+        <i data-lucide="search" id="searchIcon" style="color: white; margin-left: 1px;"></i>
+      </div>
+      <div class="cart-wrap">
+        <i data-lucide="shopping-cart" class="icon-cart"></i>
+      </div>
+    </div>
+  </header>
+<main id="out"></main>
+<script>
+    const params = Object.fromEntries(new URLSearchParams(location.search));
+
+    fetch('/api/reports?' + new URLSearchParams(params))
+        .then(r => r.ok ? r.json() : Promise.reject(r))
+        .then(data => render(data))
+        .catch(err => {
+  document.getElementById('out').innerHTML = `
+    <div class="error-card">
+      Error loading report :)
+    </div>
+  `;
+});
+
+    function render(rows) {
+  const out = document.getElementById('out');
+
+  if (!Array.isArray(rows) || !rows.length) {
+    out.innerHTML = '<div class="results-card">No results</div>';
+    return;
+  }
+
+  const cols = Object.keys(rows[0]);
+  const thead = '<tr>' + cols.map(c => `<th>${c}</th>`).join('') + '</tr>';
+  const tbody = rows.map(r =>
+    '<tr>' + cols.map(c => `<td>${r[c] ?? ''}</td>`).join('') + '</tr>'
+  ).join('');
+
+  out.innerHTML = `<div class="results-card"><table>${thead}${tbody}</table></div>`;
+}
+
+</script>
+<script type="module">
+  import { createIcons, icons } from 'https://unpkg.com/lucide@latest/dist/esm/lucide.js';
+  createIcons({ icons });
+</script>
+
+<style>
+  table{width:100%;border-collapse:collapse;color:#fff}
+  th,td{border:1px solid rgba(255,255,255,.2);padding:8px 10px;text-align:left}
+  th{background:rgba(255,255,255,.08)}
+</style>
+</body>
+</html>

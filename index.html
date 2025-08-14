@@ -51,7 +51,35 @@
   </header>
 
   <main class="hero">
-  </main>
+    <section class="menu-card">
+      <h2>MENU</h2>
+      <div class="menu-grid">
+          <button class="pill" data-route="most-expensive">
+            Most Expensive Item in Each Category
+          </button>
+
+          <button class="pill need-date" data-route="most-on-date">
+            List All Users With Most Posts On A Date
+          </button>
+
+          <button class="pill need-xy" data-route="same-day-xy">
+            Users who posted ≥2 items same day in categories X & Y
+          </button>
+
+        <button class="pill" data-route="all-poor">
+          Users who posted reviews and all of them are ‘Poor’
+        </button>
+
+        <button class="pill need-user" data-route="good-only-by-user">
+          Items by User X with only Excellent/Good comments
+        </button>
+
+        <button class="pill" data-route="no-poor-or-none">
+          Users whose items have no ‘Poor’ reviews (or no reviews)
+        </button>
+      </div>
+    </section>
+</main>
 
   <!-- Lucide Icons -->
   <script type="module">
@@ -96,5 +124,107 @@
       }
     });
   </script>
+  <script>
+  // Simple router for the 6 actions
+  document.addEventListener('click', (e)=>{
+    const btn = e.target.closest('.pill');
+    if(!btn) return;
+
+    const route = btn.dataset.route;
+
+    // helper to go to a results page with query params
+    const go = (paramsObj) => {
+      const qs = new URLSearchParams(paramsObj).toString();
+      window.location.href = `/reports.html?${qs}`;
+    };
+
+    if(route === 'most-expensive'){
+      go({ action: 'most_expensive_per_category' });
+    }
+
+    if(route === 'most-on-date'){
+      // needs a date
+      const date = prompt('Enter date (YYYY-MM-DD):', '');
+      if(date) go({ action: 'most_posts_on_date', date });
+    }
+
+    if(route === 'same-day-xy'){
+      if (window.openXYDialog) window.openXYDialog();
+    }
+
+    if(route === 'all-poor'){
+      go({ action: 'users_all_reviews_poor' });
+    }
+
+    if(route === 'good-only-by-user'){
+      // needs user
+      const user = prompt('Enter User ID or username:', '');
+      if(user) go({ action: 'items_user_good_only', user });
+    }
+
+    if(route === 'no-poor-or-none'){
+      go({ action: 'users_no_poor_or_no_reviews' });
+    }
+  });
+</script>
+<dialog id="xyDialog">
+  <form method="dialog" id="xyForm" class="xy-form">
+    <h3>Choose two categories</h3>
+
+    <label>Category X
+      <input type="text" id="catX" placeholder="e.g., CHOCOLATE" required>
+    </label>
+
+    <label>Category Y
+      <input type="text" id="catY" placeholder="e.g., GUMMIES" required>
+    </label>
+
+    <div class="xy-actions">
+      <button type="button" id="xyCancel">Cancel</button>
+      <button type="button" id="xySubmit" disabled>Run</button>
+    </div>
+  </form>
+</dialog>
+<script>
+  // ===== dialog wiring AFTER DOM exists =====
+  document.addEventListener('DOMContentLoaded', () => {
+    const dlg = document.getElementById('xyDialog');
+    const form = document.getElementById('xyForm');
+    const catXEl = document.getElementById('catX');
+    const catYEl = document.getElementById('catY');
+    const runBtn = document.getElementById('xySubmit');
+    const cancelBtn = document.getElementById('xyCancel');
+
+    function toggleRun() {
+      runBtn.disabled = !(catXEl.value.trim() && catYEl.value.trim());
+    }
+    catXEl.addEventListener('input', toggleRun);
+    catYEl.addEventListener('input', toggleRun);
+
+    cancelBtn.addEventListener('click', () => {
+      // clean reset & close ALWAYS
+      form.reset();
+      runBtn.disabled = true;
+      if (dlg.open) dlg.close();
+    });
+
+    runBtn.addEventListener('click', () => {
+      const x = catXEl.value.trim();
+      const y = catYEl.value.trim();
+      if (!x || !y) return;
+      const qs = new URLSearchParams({ action: 'same_day_two_categories', x, y }).toString();
+      dlg.close();
+      window.location.href = `/reports.html?${qs}`;
+    });
+
+    // hook the router’s X&Y branch to open the dialog cleanly
+    window.openXYDialog = function openXYDialog() {
+      form.reset();
+      runBtn.disabled = true;
+      dlg.showModal();
+    };
+  });
+</script>
+
 </body>
 </html>
