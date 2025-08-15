@@ -9,7 +9,8 @@
 package com.sweetshopdb.ControllerClass;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Locale;
+
 
 //spring boot imports
 
@@ -19,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.sweetshopdb.ENUMClass.Category;
 import com.sweetshopdb.EntityClass.*;
 import com.sweetshopdb.ServiceClass.*;
 
@@ -33,6 +35,9 @@ public class SweetShopController
 
     @Autowired //injects and initializes the ProductService bean
     private ProductService productService;
+
+    @Autowired 
+    private ReviewService reviewService;
 
     //End point for user signup.html
     @PostMapping("/signup")
@@ -87,9 +92,54 @@ public class SweetShopController
         return productService.searchByCategory(categoryName);
     }
 
+    //endpoints for user login
     @PostMapping("/login")
     public String login(@RequestBody User user) throws DataAccessException
     {
         return userService.loginUser(user);
+    }
+
+    //endpoints for Phase 3 part 1 
+    @GetMapping("/reports")
+    public ResponseEntity<List<?>> getReports(@RequestParam(required = false) String action, @RequestParam(required = false) String date, @RequestParam(required = false) String catX, @RequestParam(required = false) String catY, @RequestParam(required = false) String username)
+    {
+        try 
+        {
+            switch(action)
+            {
+                case "most-expensive-per-category":
+                    List<Product> categoryProducts = productService.getMostExpensiveFromAllCategories();
+                    return ResponseEntity.ok(categoryProducts);
+
+                case "same-day-xy":
+                    Category categoryX = Category.valueOf(catX.toUpperCase(Locale.ROOT));
+                    Category categoryY = Category.valueOf(catY.toUpperCase(Locale.ROOT));
+                    List<String> products = productService.findSameDayXY(categoryX, categoryY);
+                    return ResponseEntity.ok(products);
+
+                case "good-or-better-by-userx":
+                    List<Product> goodOrBetterProducts = reviewService.findGoodOrBetterByUserX(username);
+                    return ResponseEntity.ok(goodOrBetterProducts);
+
+                case "most-on-date":
+                    List<String> usersWithMostPostsOnDate = productService.findUsersWithMostPostsOnDate(date);
+                    return ResponseEntity.ok(usersWithMostPostsOnDate);
+
+                case "all-poor": 
+                    List<String> onlyPoorReviews = reviewService.findOnlyPoorReviews();
+                    return ResponseEntity.ok(onlyPoorReviews);
+
+                case "no-poor-or-none":
+                    List<String> excludePoorReviews = reviewService.findExcludePoorReviews();
+                    return ResponseEntity.ok(excludePoorReviews);
+
+                default:
+                    return ResponseEntity.ok(List.of());
+            }
+        }
+        catch(Exception e)
+        {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(List.of());
+        }
     }
 }

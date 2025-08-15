@@ -10,6 +10,7 @@
 package com.sweetshopdb.ServiceClass;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -66,6 +67,54 @@ public class ReviewService
         Review savedReview = new Review(username, productID, rating, reviewDescription, today);
         System.out.println("ReviewService: Saving review for user: " + username + " on product ID: " + productID);
         return reviewRepository.save(savedReview);
+    }
+
+    //method to find products with good or excellent reviews by a specific user
+    public List<Product> findGoodOrBetterByUserX(String username)
+    {
+        if(username == null || username.trim().isEmpty())
+        {
+            throw new IllegalArgumentException("Username cannot be null or empty.");
+        }
+
+        if(!userService.existsByUsername(username))
+        {
+            throw new IllegalArgumentException("Username does not exist. Please sign up first and try again.");
+        }
+
+        System.out.println("Review Service: Finding good or excellent reviews for user: " + username);
+        return reviewRepository.findGoodOrBetterByUserX(username);
+    }
+
+    //method to find users who left only poor reviews
+    public List<String> findOnlyPoorReviews()
+    {
+        return reviewRepository.findOnlyPoorReviews();
+    }
+
+    //fill in logic
+    public List<String> findExcludePoorReviews()
+    {
+        return reviewRepository.findExcludePoorReviews();
+    }
+
+    //helper methods
+    public List<Review> getReviewsByUser(String username) 
+    {
+        if (username == null || username.trim().isEmpty()) 
+        {
+            throw new IllegalArgumentException("Username cannot be null or empty");
+        }
+        return reviewRepository.findByUsername(username);
+    }
+
+    public List<Review> getReviewsForProduct(int productId) 
+    {
+        if (productId <= 0) 
+        {
+            throw new IllegalArgumentException("Product ID must be positive");
+        }
+        return reviewRepository.findByProductID(productId);
     }
 }
 

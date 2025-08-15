@@ -53,7 +53,7 @@
 <script>
     const params = Object.fromEntries(new URLSearchParams(location.search));
 
-    fetch('/api/reports?' + new URLSearchParams(params))
+    fetch('http://localhost:8080/api/reports?' + new URLSearchParams(params))
         .then(r => r.ok ? r.json() : Promise.reject(r))
         .then(data => render(data))
         .catch(err => {

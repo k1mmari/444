@@ -12,7 +12,11 @@ import java.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.sweetshopdb.EntityClass.Product;
+import com.sweetshopdb.EntityClass.Review;
+import com.sweetshopdb.EntityClass.User;
 import com.sweetshopdb.RepositoryClass.ProductRepository;
+import com.sweetshopdb.RepositoryClass.ReviewRepository;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import com.sweetshopdb.ENUMClass.Category;
@@ -25,6 +29,9 @@ public class ProductService
 
     @Autowired //injects and initializes the UserService bean
     private UserService userService;
+
+    @Autowired
+    private ReviewRepository reviewRepository;
 
     //method to return a search result for product name's (kit-kat)
     public List<Product> searchProducts(String query)
@@ -108,7 +115,81 @@ public class ProductService
         }
     }
 
-    public Product findById(int productId) {
+    public Product findById(int productId) 
+    {
     return productRepository.findById(productId).orElse(null);
-}
+    }
+
+    //method to find the most expensive item in each category
+    public List<Product> getMostExpensiveFromAllCategories()
+    {
+        List<Product> result = new ArrayList<>();
+
+        try
+        {
+            for(Category category : Category.values())
+            {
+                List<Product> categoryProducts = productRepository.getMostExpensiveCategoryList(category);
+                if(!categoryProducts.isEmpty())
+                {
+                    result.add(categoryProducts.get(0));
+                }
+            }
+        }
+        catch(Exception e) 
+        {
+            System.err.println("Error occurred while fetching most expensive products: " + e.getMessage());
+            return List.of();
+        }
+
+        System.out.println("ProductService: Found " + result.size() + " products");
+        return result;
+    }
+
+    /*Method to find users who posted items in particular categories (specified by the user) on the same day */
+    public List<String> findSameDayXY(Category catX, Category catY)
+    {
+        if(catX == null || catY == null)
+        {
+            System.out.println("Category names cannot be null.");
+            return List.of();
+        }
+
+        if(catX.equals(catY))
+        {
+            System.out.println("Category names must be different.");
+            return List.of();
+        }
+
+        if(!productRepository.existsByCategory(catX) || !productRepository.existsByCategory(catY))
+        {
+            System.out.println("One or both categories do not exist.");
+            return List.of();
+        }
+        //output for debugging
+        System.out.println("Searching for users who posted items in categories: " + catX + " and " + catY);
+
+        return productRepository.findSameDayXY(catX, catY);
+    }
+
+    public List<String> findUsersWithMostPostsOnDate(String date)
+    {
+        if(date == null || date.trim().isEmpty())
+        {
+            System.out.println("Date cannot be null or empty.");
+            return List.of();
+        }
+
+        try
+        {
+            LocalDate.parse(date);
+        }
+        catch(Exception e)
+        {
+            System.out.println("Invalid date format. Expected format is: YYYY-MM-DD");
+            return List.of();
+        }
+
+        return productRepository.findUsersWithMostPostsOnDate(date);
+    }
 }

@@ -54,29 +54,29 @@
     <section class="menu-card">
       <h2>MENU</h2>
       <div class="menu-grid">
-          <button class="pill" data-route="most-expensive">
-            Most Expensive Item in Each Category
+          <button class="pill" data-route="most-expensive-per-category">
+            🏆 Most Expensive Items by Category
+          </button>
+
+          <button class="pill need-xy" data-route="same-day-xy">
+            Users who posted 2 items on the same day in categories X & Y
+          </button>
+
+          <button class="pill need-user" data-route="good-or-better-by-userx">
+            Items by User X with only Excellent/Good comments
           </button>
 
           <button class="pill need-date" data-route="most-on-date">
             List All Users With Most Posts On A Date
           </button>
-
-          <button class="pill need-xy" data-route="same-day-xy">
-            Users who posted ≥2 items same day in categories X & Y
+        
+          <button class="pill" data-route="all-poor">
+            Users who posted reviews and all of them are ‘Poor’
           </button>
 
-        <button class="pill" data-route="all-poor">
-          Users who posted reviews and all of them are ‘Poor’
-        </button>
-
-        <button class="pill need-user" data-route="good-only-by-user">
-          Items by User X with only Excellent/Good comments
-        </button>
-
-        <button class="pill" data-route="no-poor-or-none">
-          Users whose items have no ‘Poor’ reviews (or no reviews)
-        </button>
+          <button class="pill" data-route="no-poor-or-none">
+            Users whose items have no ‘Poor’ reviews (or no reviews)
+          </button>
       </div>
     </section>
 </main>
@@ -138,8 +138,8 @@
       window.location.href = `/reports.html?${qs}`;
     };
 
-    if(route === 'most-expensive'){
-      go({ action: 'most_expensive_per_category' });
+    if(route === 'most-expensive-per-category'){
+      go({ action: 'most-expensive-per-category' });
     }
 
     if(route === 'most-on-date'){
