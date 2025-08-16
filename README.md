@@ -4,6 +4,10 @@ Frontend: HTML, CSS, JS
 Backend: Java, Spring Boot
 Database: SQL, unfortunately 
 
+Alfredo Catzin: Backend, Database
+Mariia Kim: UI, frontend
+Jesus Mora: frontend, inventory
+
 ## System Requirements
 - Java 21 (Any other JDK version will not be compatible with the spring boot framework utilized)
 - MySQL 8.0+
