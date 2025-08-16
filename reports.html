@@ -51,37 +51,92 @@
   </header>
 <main id="out"></main>
 <script>
-    const params = Object.fromEntries(new URLSearchParams(location.search));
+  const params = Object.fromEntries(new URLSearchParams(location.search));
 
-    fetch('http://localhost:8080/api/reports?' + new URLSearchParams(params))
-        .then(r => r.ok ? r.json() : Promise.reject(r))
-        .then(data => render(data))
-        .catch(err => {
-  document.getElementById('out').innerHTML = `
-    <div class="error-card">
-      Error loading report :)
-    </div>
-  `;
-});
+  fetch('http://localhost:8080/api/reports?' + new URLSearchParams(params))
+    .then(r => r.ok ? r.json() : Promise.reject(r))
+    .then(data => renderCards(data))
+    .catch(err => {
+      document.getElementById('out').innerHTML = `
+        <div class="error-card">Error loading report :)</div>
+      `;
+    });
 
-    function render(rows) {
+  function fmtPrice(val) {
+    const n = Number(val);
+    return Number.isFinite(n) ? `$${n.toFixed(2)}` : (val ?? '');
+  }
+  function esc(s) {
+    return String(s ?? '').replace(/[&<>"']/g, m => ({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    }[m]));
+  }
+
+  function renderCards(rows) {
   const out = document.getElementById('out');
-
-  if (!Array.isArray(rows) || !rows.length) {
+  if (!Array.isArray(rows) || rows.length === 0) {
     out.innerHTML = '<div class="results-card">No results</div>';
     return;
   }
 
-  const cols = Object.keys(rows[0]);
-  const thead = '<tr>' + cols.map(c => `<th>${c}</th>`).join('') + '</tr>';
-  const tbody = rows.map(r =>
-    '<tr>' + cols.map(c => `<td>${r[c] ?? ''}</td>`).join('') + '</tr>'
-  ).join('');
+  const sample = rows[0] ?? {};
+  const type = sample.hasOwnProperty('productName')
+    ? 'product'
+    : sample.hasOwnProperty('username')
+    ? 'user'
+    : 'generic';
 
-  out.innerHTML = `<div class="results-card"><table>${thead}${tbody}</table></div>`;
+  const fmtPrice = (v) => {
+    const n = Number(v);
+    return Number.isFinite(n) ? `$${n.toFixed(2)}` : (v ?? '');
+  };
+
+  const html = rows.map((item) => {
+    if (type === 'product') {
+      const p = item;
+      return `
+        <article class="product-card">
+          <h3 class="card-title">${esc(p.productName)}</h3>
+          ${p.category ? `<span class="badge">${esc(p.category)}</span>` : ''}
+          ${p.description ? `<p class="card-desc">${esc(p.description)}</p>` : ''}
+          <div class="card-meta">
+            ${p.price !== undefined ? `<span class="price">${fmtPrice(p.price)}</span>` : ''}
+            ${p.stockQuantity !== undefined ? `<span class="stock">Stock: ${esc(p.stockQuantity)}</span>` : ''}
+          </div>
+          <div class="card-foot">
+            ${p.addedByUsername ? `<span class="adder">by ${esc(p.addedByUsername)}</span>` : ''}
+            ${p.dateAdded ? `<time datetime="${esc(p.dateAdded)}">${esc(p.dateAdded)}</time>` : ''}
+          </div>
+        </article>
+      `;
+    }
+
+    if (type === 'user') {
+      const u = item;
+      return `
+        <article class="user-card">
+          <h3 class="user-name">${esc(u.username)}</h3>
+          ${u.email ? `<p class="user-email">${esc(u.email)}</p>` : ''}
+          ${u.role ? `<span class="user-role">${esc(u.role)}</span>` : ''}
+          ${u.dateCreated ? `<time datetime="${esc(u.dateCreated)}">Joined: ${esc(u.dateCreated)}</time>` : ''}
+        </article>
+      `;
+    }
+
+    // fallback: generic key:value dump
+    return `
+      <article class="generic-card">
+        ${Object.entries(item)
+          .map(([k, v]) => `<p><b>${esc(k)}:</b> ${esc(v)}</p>`)
+          .join('')}
+      </article>
+    `;
+  }).join('');
+
+  out.innerHTML = `<section class="cards-grid">${html}</section>`;
 }
-
 </script>
+
 <script type="module">
   import { createIcons, icons } from 'https://unpkg.com/lucide@latest/dist/esm/lucide.js';
   createIcons({ icons });
