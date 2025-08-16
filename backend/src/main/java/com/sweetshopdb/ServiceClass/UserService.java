@@ -8,14 +8,9 @@
 
 package com.sweetshopdb.ServiceClass;
 
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import com.sweetshopdb.RepositoryClass.ReviewRepository;
 import com.sweetshopdb.RepositoryClass.UserRepository;
-import com.sweetshopdb.RepositoryClass.ProductRepository;
-import com.sweetshopdb.ENUMClass.Category;
 import com.sweetshopdb.EntityClass.User;
 
 @Service
@@ -23,12 +18,6 @@ public class UserService
 {
     @Autowired //Injects and initializes the UserRepository bean
     private UserRepository userRepository;
-
-    @Autowired
-    private ProductRepository productRepository;
-
-    @Autowired
-    private ReviewRepository reviewRepository;
 
     public String registerUser(User user)
     {

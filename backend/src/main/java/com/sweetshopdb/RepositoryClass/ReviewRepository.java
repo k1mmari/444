@@ -15,39 +15,51 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import com.sweetshopdb.EntityClass.Product;
 import com.sweetshopdb.EntityClass.Review;
-import com.sweetshopdb.EntityClass.User;
-
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Integer>
 {
         List<Review> findByUsername(String username);
         List<Review> findByProductID(int productId);
-
-        @Query("SELECT COUNT(r) FROM Review r WHERE r.username = :username AND r.datePosted = :date_posted")
-        int userReviewLimitPerDay(@Param("username") String username, @Param("date_posted") LocalDate date_posted);
-
         boolean existsByUsernameAndProductID(@Param("username") String username, @Param("productId") int productId);
 
-        //custom query (Phase 3 pt3)
-        @Query("SELECT DISTINCT p FROM Product p WHERE p.addedByUsername = :username " +
-                "AND p.productID IN (SELECT DISTINCT r1.productID FROM Review r1 WHERE r1.productID = p.productID) " +
-                "AND p.productID NOT IN " +
-                "(SELECT DISTINCT r2.productID FROM Review r2 WHERE r2.productID = p.productID " +
-                "AND (r2.rating = 'POOR' OR r2.rating = 'FAIR'))")
-        List<Product> findGoodOrBetterByUserX(@Param("username") String username);
+        @Query("SELECT COUNT(r) FROM Review r WHERE r.username = :username AND r.datePosted = :datePosted")
+        int userReviewLimitPerDay(@Param("username") String username, @Param("datePosted") LocalDate datePosted);
 
-        //custom query (pt5)
-        @Query("SELECT DISTINCT r.username FROM Review r " +
-                "WHERE r.username NOT IN " +
-                "(SELECT r2.username FROM Review r2 WHERE r2.rating != 'POOR')")
-        List<String> findOnlyPoorReviews();
+        //custom query (Phase 3 pt3) to find the products that have received good or excellent reviews
+        @Query("SELECT r FROM Review r " +
+        "JOIN Product p ON r.productID = p.productID " +
+        "WHERE p.addedByUsername = :username " +
+        "AND r.rating IN ('GOOD', 'EXCELLENT') " +
+        "AND r.productID NOT IN (" +
+        "    SELECT r2.productID FROM Review r2 " +
+        "    WHERE r2.productID = r.productID " +
+        "    AND r2.rating IN ('POOR', 'FAIR')" +
+        ") " +
+        "ORDER BY r.datePosted DESC")
+        List<Review> findGoodOrBetterByUserX(@Param("username") String username);
 
-        //custom query (pt6)
-        @Query("SELECT DISTINCT p.addedByUsername FROM Product p " +
-                "WHERE p.addedByUsername NOT IN " +
-                "(SELECT DISTINCT p2.addedByUsername FROM Product p2 " +
-                "JOIN Review r ON p2.productID = r.productID WHERE r.rating = 'POOR')")
-        List<String> findExcludePoorReviews();
+        //custom query (Phase 3 pt5) to find users who have only given poor reviews
+        @Query("SELECT r FROM Review r " +
+        "WHERE r.username NOT IN (" +
+        "    SELECT r2.username FROM Review r2 " +
+        "    WHERE r2.rating != 'POOR'" +
+        ") " +
+        "AND r.rating = 'POOR' " + 
+        "ORDER BY r.username, r.datePosted DESC")
+        List<Review> findOnlyPoorReviews();
+
+        //custom query (Phase 3 pt6) to find reviews for products added by users who have not received poor reviews
+        @Query("SELECT r FROM Review r " +
+                "WHERE r.productID IN (" +
+                "    SELECT p.productID FROM Product p " +
+                "    WHERE p.addedByUsername NOT IN (" +
+                "        SELECT DISTINCT p2.addedByUsername FROM Product p2 " +
+                "        WHERE p2.productID IN (" +
+                "            SELECT r2.productID FROM Review r2 WHERE r2.rating = 'POOR'" +
+                "        )" +
+                "    )" +
+                ") " +
+                "ORDER BY r.username, r.datePosted DESC")
+        List<Review> findExcludePoorReviews();
 }

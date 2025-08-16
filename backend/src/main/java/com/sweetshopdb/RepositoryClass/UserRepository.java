@@ -12,7 +12,6 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import com.sweetshopdb.EntityClass.Product;
 import com.sweetshopdb.EntityClass.User;
 
 @Repository

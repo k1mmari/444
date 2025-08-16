@@ -12,10 +12,7 @@ import java.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.sweetshopdb.EntityClass.Product;
-import com.sweetshopdb.EntityClass.Review;
-import com.sweetshopdb.EntityClass.User;
 import com.sweetshopdb.RepositoryClass.ProductRepository;
-import com.sweetshopdb.RepositoryClass.ReviewRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -29,9 +26,6 @@ public class ProductService
 
     @Autowired //injects and initializes the UserService bean
     private UserService userService;
-
-    @Autowired
-    private ReviewRepository reviewRepository;
 
     //method to return a search result for product name's (kit-kat)
     public List<Product> searchProducts(String query)
@@ -115,11 +109,6 @@ public class ProductService
         }
     }
 
-    public Product findById(int productId) 
-    {
-    return productRepository.findById(productId).orElse(null);
-    }
-
     //method to find the most expensive item in each category
     public List<Product> getMostExpensiveFromAllCategories()
     {
@@ -147,7 +136,7 @@ public class ProductService
     }
 
     /*Method to find users who posted items in particular categories (specified by the user) on the same day */
-    public List<String> findSameDayXY(Category catX, Category catY)
+    public List<Product> findSameDayXY(Category catX, Category catY)
     {
         if(catX == null || catY == null)
         {
@@ -172,9 +161,9 @@ public class ProductService
         return productRepository.findSameDayXY(catX, catY);
     }
 
-    public List<String> findUsersWithMostPostsOnDate(String date)
+    public List<Product> findUsersWithMostPostsOnDate(String dateString)
     {
-        if(date == null || date.trim().isEmpty())
+        if(dateString == null || dateString.trim().isEmpty())
         {
             System.out.println("Date cannot be null or empty.");
             return List.of();
@@ -182,14 +171,15 @@ public class ProductService
 
         try
         {
-            LocalDate.parse(date);
+            LocalDate date = LocalDate.parse(dateString);
+            List<Product> result = productRepository.findUsersWithMostPostsOnDate(date);
+            System.out.println("ProductService: Found " + result.size() + " products.");
+            return result;
         }
         catch(Exception e)
         {
             System.out.println("Invalid date format. Expected format is: YYYY-MM-DD");
             return List.of();
         }
-
-        return productRepository.findUsersWithMostPostsOnDate(date);
     }
 }

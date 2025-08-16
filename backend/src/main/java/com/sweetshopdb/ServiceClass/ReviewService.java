@@ -11,10 +11,8 @@ package com.sweetshopdb.ServiceClass;
 
 import java.time.LocalDate;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.sweetshopdb.ENUMClass.Rating;
 import com.sweetshopdb.EntityClass.Product;
 import com.sweetshopdb.RepositoryClass.ReviewRepository;
@@ -70,7 +68,7 @@ public class ReviewService
     }
 
     //method to find products with good or excellent reviews by a specific user
-    public List<Product> findGoodOrBetterByUserX(String username)
+    public List<Review> findGoodOrBetterByUserX(String username)
     {
         if(username == null || username.trim().isEmpty())
         {
@@ -87,13 +85,13 @@ public class ReviewService
     }
 
     //method to find users who left only poor reviews
-    public List<String> findOnlyPoorReviews()
+    public List<Review> findOnlyPoorReviews()
     {
         return reviewRepository.findOnlyPoorReviews();
     }
 
     //fill in logic
-    public List<String> findExcludePoorReviews()
+    public List<Review> findExcludePoorReviews()
     {
         return reviewRepository.findExcludePoorReviews();
     }

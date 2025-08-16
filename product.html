@@ -295,6 +295,10 @@
   <div class="modal" id="reviewModal">
     <div class="modal-card">
       <h3>Leave a Review</h3>
+
+      <div class="modal-header">
+        <label for="username">Username:</label>
+        <input type="text" id="username" placeholder="Enter your username" />
       
       <!-- Rating dropdown -->
       <div class="rating-dropdown-container">
@@ -349,6 +353,7 @@
   console.log('Product ID from URL:', productId);
     if(productId && productId !== "undefined" && !isNaN(productId)) {
       await loadProduct(productId);
+      await loadReviews(productId);
     }
   });
 
@@ -388,24 +393,67 @@
       function resetModal() {
       document.getElementById("ratingSelect").value = "EXCELLENT";
       document.getElementById("reviewText").value = "";
+      document.getElementById("username").value = "";
     }
 
-  // ===== Submit review =====
-  document.getElementById("submitReview").addEventListener("click", () => {
+  // ===== Submit new review =====
+  document.getElementById("submitReview").addEventListener("click", async () => {
     const rating = document.getElementById("ratingSelect").value;
     const text = document.getElementById("reviewText").value.trim();
     const username = document.getElementById("username").value.trim();
-    
+
     if (!text) {
-      alert("Please write a review description!");
+      return alert("Write something first!");
+    }
+
+    if(!username) {
+      return alert("Please enter your username!");
+    }
+
+    const params = new URLSearchParams(location.search);
+    const productID = params.get("id");
+
+    if(!productID) {
+      alert("Product ID is missing!");
       return;
     }
 
-    // Backend will handle submission
-    alert(`Review submitted!\nRating: ${rating}\nUser: ${username}`);
-    modal.classList.remove("open");
-    resetModal();
+    try {
+      const res = await fetch(`http://localhost:8080/api/reviews`, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({ username: username, productID: productID, rating: rating, reviewDescription: text})
+      });
+
+      if(res.ok) {
+        const result = await res.text();
+        alert("Review submitted successfully!");
+        modal.classList.remove("open");
+        resetModal();
+
+        await loadReviews(productID); //reload reviews after submission
+      } else {
+        const error = await res.text();
+        alert(`Error submitting review: ${error}`);
+      }
+    } catch(error) {
+      console.error('Error submitting review: ', error);
+      alert("Failed to submit review. Please try again later.");
+    }
   });
+
+  // ===== Load reviews =====
+  async function loadReviews(productID) {
+    try {
+      const res = await fetch(`http://localhost:8080/api/products/${productID}/reviews`);
+      if (res.ok) {
+        const reviews = await res.json();
+        displayReviews(reviews);
+      }
+    } catch (error) {
+      console.error('Error loading reviews: ', error);
+    }
+  }
 
   // ===== Helpers =====
   // owned=true -> show Delete button; id used for backend later
@@ -416,26 +464,43 @@
 
     const el = document.createElement("article");
     el.className = "review-pill";
-    el.dataset.reviewId = review.id || Date.now();
+    el.dataset.reviewId = review.reviewID || Date.now(); // FIXED: Use reviewID
 
-    const rating = `rating-${review.rating.toLowerCase()}`;
+    const ratingClass = `rating-${review.rating.toLowerCase()}`; // FIXED: Correct variable name
 
     el.innerHTML = `
       <div class="avatar">👤</div>
       <div>
         <div>
-          <span class="r-name">$</span>
-          <span class="stars"></span>
-          ${owned ? '<button class="btn-del" title="Delete my review">Delete</button>' : ""}
+          <span class="r-name">${review.username}</span>
+          <span class="rating-badge ${ratingClass}">${review.rating}</span>
         </div>
-        <div class="r-text"></div>
+        <div class="r-text">${review.reviewDescription}</div>
+        <div style="font-size: 12px; color: #999; margin-top: 4px;">
+          Posted on ${review.datePosted}
+        </div>
       </div>
     `;
-    el.querySelector(".r-name").textContent = username;
-    el.querySelector(".stars").textContent = starsString(rating);
-    el.querySelector(".r-text").textContent = reviewDescription; // avoid HTML injection
 
-    box.appendChild(el); // use appendChild(el) to place at bottom
+    container.appendChild(el);
+  }
+
+  function displayReviews(reviews) {
+    const container = document.getElementById("reviewsList");
+    
+    container.innerHTML = "";
+
+    if (reviews.length === 0) {
+      const noReviews = document.createElement("div");
+      noReviews.className = "no-reviews";
+      noReviews.textContent = "No reviews yet. Be the first to review!";
+      container.appendChild(noReviews);
+      return;
+    }
+
+    reviews.forEach(review => {
+      addReviewCard(review);
+    });
   }
 
   // ===== Delete my review (frontend-only; ready for backend) =====
@@ -452,46 +517,6 @@
     // await fetch(`/api/products/${productId}/reviews/${reviewId}`, { method: "DELETE" });
   });
 
-  // ===== Submit new review =====
-  document.getElementById("submitReview").addEventListener("click", async () => {
-    const textEl = document.getElementById("reviewText");
-    const text = textEl.value.trim();
-    if (!text) return alert("Write something first!");
-
-    // Frontend optimistic add
-    addReviewCard({
-      author: currentUser?.name || "You",
-      stars: selectedStars,
-      text,
-      owned: true
-    });
-
-    // TODO (backend): POST then refresh/patch with real id
-    // const res = await fetch(`/api/products/${productId}/reviews`, {
-    //   method: "POST",
-    //   headers: { "Content-Type": "application/json" },
-    //   body: JSON.stringify({ stars: selectedStars, text })
-    // });
-    // const saved = await res.json();
-    // Option A: reload list  -> await loadReviews(productId)
-    // Option B: patch temp id -> replace pill.dataset.reviewId = saved.id
-
-    // reset + close
-    textEl.value = "";
-    selectedStars = 5;
-    [...starsEl.children].forEach((s, i) => s.classList.toggle("active", i < selectedStars));
-    modal.classList.remove("open");
-  });
-
-  // ===== Optional: load reviews from backend later =====
-  // async function loadReviews(id) {
-  //   const res = await fetch(`/api/products/${id}/reviews`);
-  //   const list = await res.json();
-  //   const box = document.getElementById("reviewsList");
-  //   box.innerHTML = "";
-  //   list.forEach(r => addReviewCard({ id: r.id, author: r.author, stars: r.stars, text: r.text, owned: r.owned }));
-  // }
-  // loadReviews(productId); // uncomment when endpoint exists
 </script>
 
 </body>

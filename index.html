@@ -59,23 +59,23 @@
           </button>
 
           <button class="pill need-xy" data-route="same-day-xy">
-            Users who posted 2 items on the same day in categories X & Y
+            📅 Users who posted 2 items on the same day in categories X & Y
           </button>
 
           <button class="pill need-user" data-route="good-or-better-by-userx">
-            Items by User X with only Excellent/Good comments
+            ⭐ Items by User X with only Excellent/Good comments
           </button>
 
           <button class="pill need-date" data-route="most-on-date">
-            List All Users With Most Posts On A Date
+            1️⃣ List All Users With Most Posts On A Date
           </button>
         
           <button class="pill" data-route="all-poor">
-            Users who posted reviews and all of them are ‘Poor’
+            👎 Users who posted reviews and all of them are ‘Poor’
           </button>
 
           <button class="pill" data-route="no-poor-or-none">
-            Users whose items have no ‘Poor’ reviews (or no reviews)
+            🛡️ Users whose items have no ‘Poor’ reviews (or no reviews)
           </button>
       </div>
     </section>
@@ -143,9 +143,8 @@
     }
 
     if(route === 'most-on-date'){
-      // needs a date
       const date = prompt('Enter date (YYYY-MM-DD):', '');
-      if(date) go({ action: 'most_posts_on_date', date });
+      if(date) go({ action: 'most-on-date', date });
     }
 
     if(route === 'same-day-xy'){
@@ -153,17 +152,17 @@
     }
 
     if(route === 'all-poor'){
-      go({ action: 'users_all_reviews_poor' });
+      go({ action: 'all-poor' });
     }
 
-    if(route === 'good-only-by-user'){
+    if(route === 'good-or-better-by-userx'){
       // needs user
       const user = prompt('Enter User ID or username:', '');
-      if(user) go({ action: 'items_user_good_only', user });
+      if(user) go({ action: 'good-or-better-by-userx', username: user});
     }
 
     if(route === 'no-poor-or-none'){
-      go({ action: 'users_no_poor_or_no_reviews' });
+      go({ action: 'no-poor-or-none' });
     }
   });
 </script>
@@ -209,10 +208,10 @@
     });
 
     runBtn.addEventListener('click', () => {
-      const x = catXEl.value.trim();
-      const y = catYEl.value.trim();
+      const x = catXEl.value.trim().toUpperCase();
+      const y = catYEl.value.trim().toUpperCase();
       if (!x || !y) return;
-      const qs = new URLSearchParams({ action: 'same_day_two_categories', x, y }).toString();
+      const qs = new URLSearchParams({ action: 'same-day-xy', catX: x, catY: y }).toString();
       dlg.close();
       window.location.href = `/reports.html?${qs}`;
     });
