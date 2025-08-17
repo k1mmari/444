@@ -23,7 +23,7 @@ body {
     top: 0;
     left: 0;
     right: 0;
-      z-index: 100;
+    z-index: 100;
     width: 100%;
     display: flex;
     justify-content: space-between;
@@ -120,6 +120,13 @@ body {
   margin-left: 1rem;
   display: flex;
   align-items: center;
+}
+
+.add-product-icon a {
+    padding: 0.4rem;
+    margin-left: 1rem;
+    display: flex;
+    align-items: center;
 }
 
 .categories-tab {
